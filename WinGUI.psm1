@@ -31,21 +31,29 @@ Please note: None of the conditions outlined in the disclaimer above will supers
 #>
 Function Get-UIMenuItem
 {
-	Param(
-		[string]$Text,
-		[string]$TagValue,
-		[System.Windows.Forms.Shortcut]$ShortCut
-	)
-	if($TagValue -eq "") {$TagValue = $Text}
+    Param(
+        [string]
+        $Text,
 
-	$mnu = New-Object System.Windows.Forms.MenuItem
-	$mnu.Text = $Text
+        [string]
+        $TagValue,
+
+        [System.Windows.Forms.Shortcut]
+        $ShortCut
+    )
+
+    if($TagValue -eq "") {$TagValue = $Text}
+
+    $mnu = New-Object System.Windows.Forms.MenuItem
+    $mnu.Text = $Text
     $mnu.Tag = $TagValue
-	if($ShortCut -ne $null)
-	{
-		$mnu.Shortcut = $ShortCut
-	}
-	return $mnu
+
+    if($ShortCut -ne $null)
+    {
+        $mnu.Shortcut = $ShortCut
+    }
+
+    return $mnu
 }
 
 <#
@@ -75,9 +83,6 @@ Function Get-UIMenuItem
 
     .PARAMETER Maximize
         Show Window's maximized state
-
-    .EXAMPLE
-
 #>
 function Get-UIWinForm
 {
@@ -88,7 +93,7 @@ function Get-UIWinForm
         [int]$FormWidth=500,
         [int]$FormHeight=350,
         [switch]$canResize,
-		[switch]$NoEventAdded,
+        [switch]$NoEventAdded,
         [switch]$Maximize
     )
 
@@ -98,7 +103,7 @@ function Get-UIWinForm
     $form2.AutoValidate = "Disable"
     $form2.StartPosition = "CenterScreen"
     #$form2.AutoScroll = $true
-	$form2.Add_KeyDown({if ($_.KeyCode -eq "Escape") {$this.Close()}})
+    $form2.Add_KeyDown({if ($_.KeyCode -eq "Escape") {$this.Close()}})
 
     $form2.Add_Shown({
         if($this.height -lt $global:vpos)
@@ -109,12 +114,12 @@ function Get-UIWinForm
                 if($i -eq 0)
                 {
                     $this.Controls[$i].Anchor = [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Top
-					$this.Controls[$i].Top = $global:vpos
+                    $this.Controls[$i].Top = $global:vpos
                 }
                 elseif($this.Controls[$i] -is [System.Windows.Forms.Button] -and $this.Controls[$i].Name -like "btn*")
                 {
                     $this.Controls[$i].Anchor = [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Top
-					$this.Controls[$i].Top = $global:vpos + 10
+                    $this.Controls[$i].Top = $global:vpos + 10
                 }
                 else
                 {
@@ -122,9 +127,9 @@ function Get-UIWinForm
                 }
                 $i++
             }
-			$this.AutoScroll = $true
+            $this.AutoScroll = $true
         }
-	})
+    })
 
     $form2.ClientSize = New-Object System.Drawing.Size($formWidth,$formHeight)
 
@@ -152,12 +157,12 @@ function Get-UIWinForm
         {
             Try
             {
-				if(-not [System.IO.Path]::IsPathRooted($iconLocation))
-				{
-					$iconLocation = "$env:dp\Assets\$iconLocation"
-				}
+                if(-not [System.IO.Path]::IsPathRooted($iconLocation))
+                {
+                    $iconLocation = "$env:dp\Assets\$iconLocation"
+                }
                 $Icon = New-Object system.drawing.icon ($iconLocation)
-	            $form2.Icon = $Icon
+                $form2.Icon = $Icon
             }
             catch
             {
@@ -169,72 +174,73 @@ function Get-UIWinForm
             $label1 = New-Object System.Windows.Forms.Label
             $label1.AutoSize = $false
             $label1.Location = New-Object System.Drawing.Size(5,$($form2.Height-78))
-	        $label1.Size = New-Object System.Drawing.Size($($form2.Width-5),2)
+            $label1.Size = New-Object System.Drawing.Size($($form2.Width-5),2)
             $label1.BorderStyle = [System.Windows.Forms.BorderStyle]::Fixed3D
             $form2.Controls.Add($label1)
 
-			$buttonText= "OK","Cancel"
+            $buttonText= "OK","Cancel"
         }
     }
 
     if($ButtonText.Length -gt 0)
     {
-		$intBottomDelta = 65
-		if(!$(IsISE)) { $intBottomDelta += 10}
-		$form2.Padding= new-object System.Windows.Forms.Padding(0,0,0,$($intBottomDelta-40))
+        $intBottomDelta = 65
+        if(!$(IsISE)) { $intBottomDelta += 10}
+        $form2.Padding= new-object System.Windows.Forms.Padding(0,0,0,$($intBottomDelta-40))
 
         $label1 = New-Object System.Windows.Forms.Label
         $label1.AutoSize = $false
         $label1.Location = New-Object System.Drawing.Size(5,$($form2.Height-$intBottomDelta-7))
         $label1.Anchor = [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Right -bor [System.Windows.Forms.AnchorStyles]::Bottom
-	    $label1.Size = New-Object System.Drawing.Size($($form2.Width-25),2)
+        $label1.Size = New-Object System.Drawing.Size($($form2.Width-25),2)
         $label1.BorderStyle = [System.Windows.Forms.BorderStyle]::Fixed3D
         $form2.Controls.Add($label1)
 
         $tmp = $form2.Width - (90 * $buttonText.Length)
         $tmpAccept = ""
-		$i = 500
+        $i = 500
         $buttonText | ForEach-Object {
             $button1 = New-Object System.Windows.Forms.Button
-			if($_.StartsWith("<"))
-			{
-				$tmp2 = $_.Substring(1)
-				$button1.Name = ("btn{0}" -f $tmp2.Replace(" ",""))
-				$button1.Text = $tmp2
+            $button.TabStop = $false
+            if($_.StartsWith("<"))
+            {
+                $tmp2 = $_.Substring(1)
+                $button1.Name = ("btn{0}" -f $tmp2.Replace(" ",""))
+                $button1.Text = $tmp2
                 $button1.TabStop = $false
-				# left bottom position
-				$button1.Location = New-Object System.Drawing.Size(5,$($form2.Height-$intBottomDelta))
+                # left bottom position
+                $button1.Location = New-Object System.Drawing.Size(5,$($form2.Height-$intBottomDelta))
                 $button1.Anchor = [System.Windows.Forms.AnchorStyles]::Left -bor [System.Windows.Forms.AnchorStyles]::Bottom
-			}
-			else
-			{
-				$tmp2 = $_
-				# right bottom position
-	            $button1.Location = New-Object System.Drawing.Size($tmp,$($form2.Height-$intBottomDelta))
+            }
+            else
+            {
+                $tmp2 = $_
+                # right bottom position
+                $button1.Location = New-Object System.Drawing.Size($tmp,$($form2.Height-$intBottomDelta))
                 $button1.Anchor = [System.Windows.Forms.AnchorStyles]::Right -bor [System.Windows.Forms.AnchorStyles]::Bottom
-			}
+            }
             $tmp += 90
 
-			if($tmp2.StartsWith("^"))
-			{
-				$tmp2 = $_.Substring(1)
-				$button1.Name = ("btn{0}" -f $tmp2.Replace(" ",""))
-				$button1.Text = $tmp2
-				$button1.Enabled = $false
-			}
-			else
-			{
-				$button1.Name = ("btn{0}" -f $tmp2.Replace(" ",""))
-				$button1.Text = $tmp2
+            if($tmp2.StartsWith("^"))
+            {
+                $tmp2 = $_.Substring(1)
+                $button1.Name = ("btn{0}" -f $tmp2.Replace(" ",""))
+                $button1.Text = $tmp2
+                $button1.Enabled = $false
+            }
+            else
+            {
+                $button1.Name = ("btn{0}" -f $tmp2.Replace(" ",""))
+                $button1.Text = $tmp2
                 if($tmpAccept -ne "Done") {$tmpAccept = $tmp2}
-			}
+            }
 
             $button1.Size = New-Object System.Drawing.Size(75,25)
 
             if(-not $NoEventAdded -and $_ -eq $buttonText[-1])
-			{
+            {
                 $button1.DialogResult = [System.Windows.Forms.DialogResult]::Cancel
-			}
+            }
             else
             {
                 $button1.DialogResult = [System.Windows.Forms.DialogResult]::None
@@ -270,17 +276,21 @@ function Get-UIWinForm
 
     .PARAMETER Message
         Specifies default text
-
-    .EXAMPLE
-        example
 #>
 Function Get-UIInputBox
 {
     param(
-        [string]$Message="Please enter the value",
-        [string]$Title="",
-        [int]$Width=300,
-        [string]$DefaultText
+        [string]
+        $Message="Please enter the value",
+
+        [string]
+        $Title="",
+
+        [int]
+        $Width=300,
+
+        [string]
+        $DefaultText
     )
 
     if($Width -eq 0) {$Width = 300}
@@ -318,12 +328,12 @@ Function Get-UIInputBox
     $ctrls = Get-UIControl textbox $DefaultText $widthLeft "edit" @{Name="txtInput";TabIndex=0}
     $form2.Controls.AddRange($ctrls)
 
-	$btnOK = $form2.Controls.Find("btnOK",$true)[0]
+    $btnOK = $form2.Controls.Find("btnOK",$true)[0]
     if($btnOK -ne $null)
     {
         $btnOK.DialogResult = [System.Windows.Forms.DialogResult]::None
-		$btnOK.Add_Click({
-			$txtInput = $this.FindForm().Controls.Find("txtInput", $false)
+        $btnOK.Add_Click({
+            $txtInput = $this.FindForm().Controls.Find("txtInput", $false)
             $this.FindForm().Tag = $txtInput.Text
             $this.FindForm().DialogResult = [System.Windows.Forms.DialogResult]::OK
         })
@@ -352,16 +362,23 @@ Function Get-UIInputBox
 #>
 Function Get-UIMessageBox
 {
-	param(
-		[string]$Message,
-		[string]$Title = "Message",
-		[string]$ButtonText = "OK",
-		[string]$IconText = "Information"
-	)
+    param(
+        [string]
+        $Message,
 
-	$Message = $Message.Replace("\n", [System.Environment]::NewLine)
+        [string]
+        $Title = "Message",
 
-	$btn= [System.Windows.Forms.MessageBoxButtons]::OK
+        [string]
+        $ButtonText = "OK",
+
+        [string]
+        $IconText = "Information"
+    )
+
+    $Message = $Message.Replace("\n", [System.Environment]::NewLine)
+
+    $btn= [System.Windows.Forms.MessageBoxButtons]::OK
     switch($ButtonText)
     {
         "AbortRetyIgnore" {$btn= [System.Windows.Forms.MessageBoxButtons]::AbortRetryIgnore}
@@ -371,11 +388,11 @@ Function Get-UIMessageBox
         "YesNoCancel" {$btn= [System.Windows.Forms.MessageBoxButtons]::YesNoCancel}
     }
 
-	$icon= [System.Windows.Forms.MessageBoxIcon]::Information
-	[System.Windows.Forms.MessageBoxIcon]::TryParse($IconText,[ref] $icon)
+    $icon= [System.Windows.Forms.MessageBoxIcon]::Information
+    [System.Windows.Forms.MessageBoxIcon]::TryParse($IconText,[ref] $icon)
 
     $tmp = New-Object System.Windows.Forms.DialogResult
-	$tmp = [System.Windows.Forms.MessageBox]::Show($Message, $Title, $btn, $icon)
+    $tmp = [System.Windows.Forms.MessageBox]::Show($Message, $Title, $btn, $icon)
 
     return $tmp
 }
@@ -392,12 +409,12 @@ Function Get-UIMessageBox
 #>
 Function Get-UIConfirmation
 {
-	param(
-		[string]$Message = "Are you sure?",
-		[string]$Title = "Confirm"
+    param(
+        [string]$Message = "Are you sure?",
+        [string]$Title = "Confirm"
     )
 
-	$tmp = Get-UIMessageBox $Message $Title "YesNo"
+    $tmp = Get-UIMessageBox $Message $Title "YesNo"
 
     If($tmp.count -gt 1) {$tmp = $tmp[$tmp.Count-1]}
 
@@ -433,7 +450,7 @@ function Get-UIFileOpenDialog()
     )
 
     $objForm = New-Object System.Windows.Forms.OpenFileDialog
-	$objForm.Filter = $Filter
+    $objForm.Filter = $Filter
 
     $attr = [System.IO.File]::GetAttributes($InitPath)
     if($attr.HasFlag([System.IO.FileAttributes]::Directory))
@@ -446,7 +463,7 @@ function Get-UIFileOpenDialog()
         $objForm.FileName = [System.IO.Path]::GetFileName($InitPath)
     }
 
-	if($Title -ne ""){$objForm.Title = $Title}
+    if($Title -ne ""){$objForm.Title = $Title}
     if($MultiSelect) {$objForm.Multiselect= $true}
 
     $result = $objForm.ShowDialog()
@@ -488,14 +505,14 @@ function Get-UIFileSaveDialog()
         [string]$InitPath,
         [string]$InitFileName,
         [string]$Filter = "All files (*.*)|*.*",
-		[string]$Title = ""
+        [string]$Title = ""
     )
 
     $objForm = New-Object System.Windows.Forms.SaveFileDialog
-	$objForm.Filter = $Filter
+    $objForm.Filter = $Filter
     $objForm.InitialDirectory = $InitPath
     $objForm.FileName = $InitFileName
-	if($Title -ne ""){$objForm.Title = $Title}
+    if($Title -ne ""){$objForm.Title = $Title}
 
     $result = $objForm.ShowDialog()
     if($result -eq "OK")
@@ -563,23 +580,29 @@ function Get-UIFolderSaveDialog()
 
     .PARAMETER OtherAttributes
         Specifies other property values of the control
-
-    .EXAMPLE
-        example
 #>
 Function Get-UIControl
 {
     param(
-        [string]$ControlType,
-        [object[]]$value,
-        [int[]]$size=0,
-        [string]$mode="view",
-        [hashtable]$OtherAttributes
+        [string]
+        $ControlType,
+
+        [object[]]
+        $value,
+
+        [int[]]
+        $size=0,
+
+        [string]
+        $mode="view",
+
+        [hashtable]
+        $OtherAttributes
     )
 
-	if($ControlType -eq "listview" -and ($value -eq $null -or ($value[0] -is [System.Collections.IDictionary] -and $value[0].count -eq 0)))
-	{
-		$ControlType = "label"
+    if($ControlType -eq "listview" -and ($value -eq $null -or ($value[0] -is [System.Collections.IDictionary] -and $value[0].count -eq 0)))
+    {
+        $ControlType = "label"
         if($OtherAttributes -ne $null -and $OtherAttributes["NA"] -ne $null)
         {
             $value = $OtherAttributes["NA"]
@@ -589,52 +612,51 @@ Function Get-UIControl
             $value = "N/A"
         }
         if($size.count -gt 0){$size.Clear()}
-		$mode = "view"
+        $mode = "view"
         if($OtherAttributes -eq $null)
         {
             $OtherAttributes = @{}
         }
-		$OtherAttributes.Add("BackColor","white")
-	}
+        $OtherAttributes.Add("BackColor","white")
+    }
 
     $NoNewLine = $false
     $ctrl = $null
     Switch($ControlType)
     {
-		"button" {
-			$ctrl = New-Object System.Windows.Forms.Button
-			$ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-			$ctrl.TabIndex = 1
-			if($Size.Count -gt 0 -and $Size[0] -gt 0)
-			{
+        "button" {
+            $ctrl = New-Object System.Windows.Forms.Button
+            $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
+            if($Size.Count -gt 0 -and $Size[0] -gt 0)
+            {
                 if($size.Length -gt 1)
                 {
-				    $ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
+                    $ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
                 }
                 else
                 {
-				    $ctrl.Size = New-Object System.Drawing.Size($size[0], 30)
+                    $ctrl.Size = New-Object System.Drawing.Size($size[0], 30)
                 }
-			}
-			else
-			{
-	            $ctrl.AutoSize = $true
-				$ctrl.AutoSizeMode = [System.Windows.Forms.AutoSizeMode]::GrowAndShrink
-			}
+            }
+            else
+            {
+                $ctrl.AutoSize = $true
+                $ctrl.AutoSizeMode = [System.Windows.Forms.AutoSizeMode]::GrowAndShrink
+            }
 
-			if($value[0].endswith(".png"))
-			{
-				$ctrl.Image = Get-ImageFromFile $("$env:dp\Assets\{0}" -f $value[0])
-				$ctrl.Width = $ctrl.Image.Width
-				$ctrl.Height = $ctrl.Image.Height
-			}
-			else
-			{
-				$ctrl.Text = $value[0]
-			}
+            if($value[0].endswith(".png"))
+            {
+                $ctrl.Image = Get-ImageFromFile $("$env:dp\Assets\{0}" -f $value[0])
+                $ctrl.Width = $ctrl.Image.Width
+                $ctrl.Height = $ctrl.Image.Height
+            }
+            else
+            {
+                $ctrl.Text = $value[0]
+            }
 
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 foreach($key in $OtherAttributes.Keys)
                 {
                     switch($key)
@@ -670,39 +692,39 @@ Function Get-UIControl
                         }
                     }
                 }
-			}
+            }
 
             if(!$NoNewLine)
             {
-			     $global:vpos += $allHeight + 35
+                 $global:vpos += $allHeight + 35
             }
-			else
-			{
-			    $global:hpos += $ctrl.PreferredSize.Width + 5
-			}
-		}
+            else
+            {
+                $global:hpos += $ctrl.PreferredSize.Width + 5
+            }
+        }
 
-		"browser" {
-			$ctrl = New-Object System.Windows.Forms.WebBrowser
-			$ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
+        "browser" {
+            $ctrl = New-Object System.Windows.Forms.WebBrowser
+            $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
             $ctrl.ScriptErrorsSuppressed = $true
             #$ctrl.AllowNavigation = $true
             $ctrl.BackColor = "gainsboro"
-			$ctrl.Dock = [System.Windows.Forms.DockStyle]::Fill
+            $ctrl.Dock = [System.Windows.Forms.DockStyle]::Fill
             if($value -ne $null)
             {
-	            if(isURIWeb($value[0]))
-	            {
-		            $ctrl.Navigate($value[0])
-	            }
-	            else
-	            {
-		            $ctrl.DocumentText = $value[0]
-	            }
+                if(isURIWeb($value[0]))
+                {
+                    $ctrl.Navigate($value[0])
+                }
+                else
+                {
+                    $ctrl.DocumentText = $value[0]
+                }
             }
 
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 foreach($key in $OtherAttributes.Keys)
                 {
                     switch($key)
@@ -718,20 +740,20 @@ Function Get-UIControl
                     }
                 }
             }
-		}
+        }
 
         "caption" {
             $ctrl = New-Object System.Windows.Forms.Label
             $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-			$ctrl.Font = New-Object System.Drawing.Font("arial",8,[System.Drawing.FontStyle]::Bold);
+            $ctrl.Font = New-Object System.Drawing.Font("arial",8,[System.Drawing.FontStyle]::Bold);
             $ctrl.AutoSize = $true
             if($value -ne $null)
             {
                 $ctrl.Text = $value[0]
             }
-			$ctrl.TabStop = $false
-			if($size.count -gt 0 -and $size[0] -ne 0)
-			{
+            $ctrl.TabStop = $false
+            if($size.count -gt 0 -and $size[0] -ne 0)
+            {
                 if($size[0] -lt 0)
                 {
                     $ctrl.TextAlign = "TopRight"
@@ -749,10 +771,10 @@ Function Get-UIControl
                     $ctrl.AutoSize = $false
                     $ctrl.Height = $size[1]
                 }
-			}
+            }
 
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 foreach($key in $OtherAttributes.Keys)
                 {
                     switch($key)
@@ -815,189 +837,186 @@ Function Get-UIControl
                 }
             }
 
-			if($size.count -gt 0 -and $size[0] -ne 0)
-			{
+            if($size.count -gt 0 -and $size[0] -ne 0)
+            {
                 $global:hpos += $size[0]
                 $NoNewLine = $true
-			}
+            }
             elseif(!$NoNewLine)
             {
                 $tmp = $ctrl | Select-Object -First 1
                 if($tmp.Visible)
                 {
-			        $global:vpos += 20
+                    $global:vpos += 20
                 }
             }
         }
 
-		"cascading" {
-			if($OtherAttributes["Elements"] -ne $null)
-			{
-				$col = @()
-				if($OtherAttributes["Style"] -eq "Treeview")
-				{
-					$sctrl = New-Object System.Windows.Forms.Treeview
+        "cascading" {
+            if($OtherAttributes["Elements"] -ne $null)
+            {
+                $col = @()
+                if($OtherAttributes["Style"] -eq "Treeview")
+                {
+                    $sctrl = New-Object System.Windows.Forms.Treeview
                     $sctrl.Autosize = $true
-					$sctrl.TabIndex = 1
-					if($size.Length -eq 2)
-					{
-						$sctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
-					}
-					$sctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
+                    if($size.Length -eq 2)
+                    {
+                        $sctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
+                    }
+                    $sctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
 
-					$OtherAttributes["Elements"] | ForEach-Object {
-						$parentNode = Add-Node $sctrl $_.Parent
+                    $OtherAttributes["Elements"] | ForEach-Object {
+                        $parentNode = Add-Node $sctrl $_.Parent
                         if($_.Child -ne "")
                         {
                             $_.Child.Split(",") | ForEach-Object {
                                 Add-Node $parentNode $_ | Out-Null
                             }
                         }
-					}
-				}
-				elseif($OtherAttributes["Style"] -eq "ParentRadio")
-				{
-					#radio
-					$sctrl = New-Object System.Windows.Forms.Panel
-					$sctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-					$sctrl.AutoSizeMode = [System.Windows.Forms.AutoSizeMode]::GrowAndShrink
-					$sctrl.AutoSize = $true
-					$sctrl.TabIndex = 1
-					$hpos = 0
-					$iniChild = ""
-					$OtherAttributes["Elements"] | ForEach-Object {
-						$sctrl_chd = New-Object System.Windows.Forms.RadioButton
-						$sctrl_chd.Location = New-Object System.Drawing.Point($hpos, 0)
-						$sctrl_chd.AutoSize = $true
-						$sctrl_chd.Text = $_.parent
-						$sctrl_chd.Tag = $_.child
-						if($OtherAttributes["NormalAppearance"] -eq $null)
-						{
-							$sctrl_chd.Appearance = [System.Windows.Forms.Appearance]::Button
-							$sctrl_chd.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-						}
+                    }
+                }
+                elseif($OtherAttributes["Style"] -eq "ParentRadio")
+                {
+                    #radio
+                    $sctrl = New-Object System.Windows.Forms.Panel
+                    $sctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
+                    $sctrl.AutoSizeMode = [System.Windows.Forms.AutoSizeMode]::GrowAndShrink
+                    $sctrl.AutoSize = $true
+                    $hpos = 0
+                    $iniChild = ""
+                    $OtherAttributes["Elements"] | ForEach-Object {
+                        $sctrl_chd = New-Object System.Windows.Forms.RadioButton
+                        $sctrl_chd.Location = New-Object System.Drawing.Point($hpos, 0)
+                        $sctrl_chd.AutoSize = $true
+                        $sctrl_chd.Text = $_.parent
+                        $sctrl_chd.Tag = $_.child
+                        if($OtherAttributes["NormalAppearance"] -eq $null)
+                        {
+                            $sctrl_chd.Appearance = [System.Windows.Forms.Appearance]::Button
+                            $sctrl_chd.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+                        }
 
                         if($value.Count -gt 0)
-						{
-							if($value[0].GetType().Name -eq "Boolean")
-							{
-								if($_.parent -eq "On" -and $value[0])
-								{
-									$sctrl_chd.checked = $true
+                        {
+                            if($value[0].GetType().Name -eq "Boolean")
+                            {
+                                if($_.parent -eq "On" -and $value[0])
+                                {
+                                    $sctrl_chd.checked = $true
                                     $sctrl.tag = "On"
-								}
-								elseif($_.parent -eq "Off" -and -not $value[0])
-								{
-									$sctrl_chd.checked = $true
+                                }
+                                elseif($_.parent -eq "Off" -and -not $value[0])
+                                {
+                                    $sctrl_chd.checked = $true
                                     $sctrl.tag = "Off"
-								}
-							}
-							elseif($_.parent -eq $value[0])
-							{
-								$sctrl_chd.checked = $true
+                                }
+                            }
+                            elseif($_.parent -eq $value[0])
+                            {
+                                $sctrl_chd.checked = $true
                                 $sctrl.tag = $value[0]
-							}
-						}
-						elseif($_ -eq $OtherAttributes["Elements"][0])
-						{
-							$sctrl.tag = $OtherAttributes["Elements"][0]
-						}
+                            }
+                        }
+                        elseif($_ -eq $OtherAttributes["Elements"][0])
+                        {
+                            $sctrl.tag = $OtherAttributes["Elements"][0]
+                        }
 
-						if($sctrl_chd.checked)
-						{
-							$iniChild = $_.child
-						}
+                        if($sctrl_chd.checked)
+                        {
+                            $iniChild = $_.child
+                        }
 
-						if($mode -eq "view")
-						{
-							$sctrl_chd.Enabled = $false
-						}
+                        if($mode -eq "view")
+                        {
+                            $sctrl_chd.Enabled = $false
+                        }
 
-						$sctrl_chd.Add_CheckedChanged({
-							$idx = $this.Parent.Parent.Controls.IndexOf($this.Parent)+1
-							$tmpheader = [System.Windows.Forms.Label]$this.Parent.Parent.Controls[$idx]
-							$idx += 1
-							$tmp = [System.Windows.Forms.ComboBox]$this.Parent.Parent.Controls[$idx]
+                        $sctrl_chd.Add_CheckedChanged({
+                            $idx = $this.Parent.Parent.Controls.IndexOf($this.Parent)+1
+                            $tmpheader = [System.Windows.Forms.Label]$this.Parent.Parent.Controls[$idx]
+                            $idx += 1
+                            $tmp = [System.Windows.Forms.ComboBox]$this.Parent.Parent.Controls[$idx]
 
-							if($this.tag -eq "-")
-							{
-								$tmpheader.Visible = $false
-								$tmp.Visible = $false
-							}
-							else
-							{
-								$tmpheader.Visible = $true
-								$tmp.Visible = $true
+                            if($this.tag -eq "-")
+                            {
+                                $tmpheader.Visible = $false
+                                $tmp.Visible = $false
+                            }
+                            else
+                            {
+                                $tmpheader.Visible = $true
+                                $tmp.Visible = $true
 
-								$tmp.Items.Clear();
-								$this.tag.Split("|") | ForEach-Object {
-									$tmp.Items.Add($_) | Out-Null
-								}
-								$tmp.SelectedIndex = 0
-							}
+                                $tmp.Items.Clear();
+                                $this.tag.Split("|") | ForEach-Object {
+                                    $tmp.Items.Add($_) | Out-Null
+                                }
+                                $tmp.SelectedIndex = 0
+                            }
 
-							if($this.checked)
-							{
-								$this.parent.tag = $this.Text
-							}
-						})
+                            if($this.checked)
+                            {
+                                $this.parent.tag = $this.Text
+                            }
+                        })
 
-						if($OtherAttributes["Name"] -ne $null)
-						{
-							$sctrl.Name = $OtherAttributes["Name"]
-						}
+                        if($OtherAttributes["Name"] -ne $null)
+                        {
+                            $sctrl.Name = $OtherAttributes["Name"]
+                        }
 
-						$sctrl.Controls.Add($sctrl_chd)
-						$hpos += $sctrl_chd.PreferredSize.Width
-					}
-				}
-				else
-				{
-					#combobox
-					$sctrl = New-Object System.Windows.Forms.ComboBox
-					$sctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-					$sctrl.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
-					$sctrl.TabIndex = 1
-					if($Size -ne 0 -and $Size[0] -gt 0)
-					{
-						$sctrl.Size = New-Object System.Drawing.Size($size[0], 30)
-					}
-					$sctrl.add_SelectedIndexChanged({
-						if($this.Parent -ne $null)
-						{
-							$idx = $this.Parent.Controls.IndexOf($this)+1
-							$tmpheader = [System.Windows.Forms.Label]$this.Parent.Controls[$idx]
-							$idx = $this.Parent.Controls.IndexOf($this)+2
-							$tmp = [System.Windows.Forms.ComboBox]$this.Parent.Controls[$idx]
+                        $sctrl.Controls.Add($sctrl_chd)
+                        $hpos += $sctrl_chd.PreferredSize.Width
+                    }
+                }
+                else
+                {
+                    #combobox
+                    $sctrl = New-Object System.Windows.Forms.ComboBox
+                    $sctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
+                    $sctrl.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
+                    if($Size -ne 0 -and $Size[0] -gt 0)
+                    {
+                        $sctrl.Size = New-Object System.Drawing.Size($size[0], 30)
+                    }
+                    $sctrl.add_SelectedIndexChanged({
+                        if($this.Parent -ne $null)
+                        {
+                            $idx = $this.Parent.Controls.IndexOf($this)+1
+                            $tmpheader = [System.Windows.Forms.Label]$this.Parent.Controls[$idx]
+                            $idx = $this.Parent.Controls.IndexOf($this)+2
+                            $tmp = [System.Windows.Forms.ComboBox]$this.Parent.Controls[$idx]
 
-							if($this.SelectedItem.Value -eq "-")
-							{
-								$tmpheader.Visible = $false
-								$tmp.Visible = $false
-							}
-							else
-							{
-								$tmpheader.Visible = $true
-								$tmp.Visible = $true
+                            if($this.SelectedItem.Value -eq "-")
+                            {
+                                $tmpheader.Visible = $false
+                                $tmp.Visible = $false
+                            }
+                            else
+                            {
+                                $tmpheader.Visible = $true
+                                $tmp.Visible = $true
 
-								$tmp.Items.Clear();
-								$this.SelectedItem.Value.Split("|") | ForEach-Object {
-									$tmp.Items.Add($_) | Out-Null
-								}
-								$tmp.SelectedIndex = 0
-							}
-						}
-					})
+                                $tmp.Items.Clear();
+                                $this.SelectedItem.Value.Split("|") | ForEach-Object {
+                                    $tmp.Items.Add($_) | Out-Null
+                                }
+                                $tmp.SelectedIndex = 0
+                            }
+                        }
+                    })
 
-					$sctrl.DisplayMember = "text"
-					$sctrl.ValueMember = "value"
-					$OtherAttributes["Elements"] | ForEach-Object {
-						$tmp = New-Object ListItem($_.parent, $_.child)
-						$sctrl.Items.Add($tmp) | Out-Null
+                    $sctrl.DisplayMember = "text"
+                    $sctrl.ValueMember = "value"
+                    $OtherAttributes["Elements"] | ForEach-Object {
+                        $tmp = New-Object ListItem($_.parent, $_.child)
+                        $sctrl.Items.Add($tmp) | Out-Null
                     }
 
-					if($OtherAttributes -ne $null)
-					{
+                    if($OtherAttributes -ne $null)
+                    {
                         foreach($key in $OtherAttributes.Keys)
                         {
                             switch($key)
@@ -1021,80 +1040,79 @@ Function Get-UIControl
                                 }
                             }
                         }
-					}
-				}
-				$col+= $sctrl
-				if(!$NoNewLine)
-				{
-					$global:vpos += 35
-				}
-
-				if($OtherAttributes["Style"] -ne "Treeview")
+                    }
+                }
+                $col+= $sctrl
+                if(!$NoNewLine)
                 {
-				    # Child caption
-				    $sctrl = New-Object System.Windows.Forms.Label
-				    $sctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-				    $sctrl.Font = New-Object System.Drawing.Font("arial",8,[System.Drawing.FontStyle]::Bold);
-				    $sctrl.AutoSize = $true
-				    $sctrl.Text = $OtherAttributes["ChildCaption"]
-				    $sctrl.TabStop = $false
-				    if($blnHide)
-				    {
-					    $sctrl.Visible = $false
-				    }
-				    $col+= $sctrl
-				    $global:vpos += 20
+                    $global:vpos += 35
+                }
 
-				    # Child Dropdown
-				    $sctrl = New-Object System.Windows.Forms.ComboBox
-				    $sctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-				    $sctrl.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
-					$sctrl.TabIndex = 1
-					if(-not [string]::IsNullOrEmpty($iniChild))
-				    {
-					    $iniChild.Split("|") | ForEach-Object {
-						    $sctrl.Items.Add($_) | Out-Null
-					    }
-					    $iniChild = ""
+                if($OtherAttributes["Style"] -ne "Treeview")
+                {
+                    # Child caption
+                    $sctrl = New-Object System.Windows.Forms.Label
+                    $sctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
+                    $sctrl.Font = New-Object System.Drawing.Font("arial",8,[System.Drawing.FontStyle]::Bold);
+                    $sctrl.AutoSize = $true
+                    $sctrl.Text = $OtherAttributes["ChildCaption"]
+                    $sctrl.TabStop = $false
+                    if($blnHide)
+                    {
+                        $sctrl.Visible = $false
+                    }
+                    $col+= $sctrl
+                    $global:vpos += 20
+
+                    # Child Dropdown
+                    $sctrl = New-Object System.Windows.Forms.ComboBox
+                    $sctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
+                    $sctrl.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
+                    if(-not [string]::IsNullOrEmpty($iniChild))
+                    {
+                        $iniChild.Split("|") | ForEach-Object {
+                            $sctrl.Items.Add($_) | Out-Null
+                        }
+                        $iniChild = ""
                         $sctrl.SelectedIndex = 0
-				    }
+                    }
 
-				    #TODO: Set value using value[1]
+                    #TODO: Set value using value[1]
                     if($value.Count -gt 1)
                     {
                         ## search combobox
                         $tmp = $sctrl.FindStringExact($value[1])
-						if($tmp -ne -1) {$sctrl.SelectedIndex = $tmp}
+                        if($tmp -ne -1) {$sctrl.SelectedIndex = $tmp}
                     }
 
-				    if($Size.Count -gt 0 -and $Size[0] -gt 0)
-				    {
-					    $sctrl.Size = New-Object System.Drawing.Size($size[0], 30)
-				    }
-				    if($blnHide)
-				    {
-					    $sctrl.Visible = $false
-				    }
-				    $col+= $sctrl
-				    if($OtherAttributes -ne $null)
-				    {
-					    if($OtherAttributes["Name"] -ne $null)
-					    {
-						    $sctrl.Name = $OtherAttributes["Name"] + "_Child"
-					    }
-						if($OtherAttributes["NoNewLine"] -ne $null)
-						{
-							$NoNewLine = $OtherAttributes["NoNewLine"]
-						}
-				    }
-					if($NoNewLine)
-					{
-						$global:vpos += 35
-					}
+                    if($Size.Count -gt 0 -and $Size[0] -gt 0)
+                    {
+                        $sctrl.Size = New-Object System.Drawing.Size($size[0], 30)
+                    }
+                    if($blnHide)
+                    {
+                        $sctrl.Visible = $false
+                    }
+                    $col+= $sctrl
+                    if($OtherAttributes -ne $null)
+                    {
+                        if($OtherAttributes["Name"] -ne $null)
+                        {
+                            $sctrl.Name = $OtherAttributes["Name"] + "_Child"
+                        }
+                        if($OtherAttributes["NoNewLine"] -ne $null)
+                        {
+                            $NoNewLine = $OtherAttributes["NoNewLine"]
+                        }
+                    }
+                    if($NoNewLine)
+                    {
+                        $global:vpos += 35
+                    }
                 }
-				$ctrl = $col
-			}
-		}
+                $ctrl = $col
+            }
+        }
 
         "checkbox" {
             $ctrl = New-Object System.Windows.Forms.CheckBox
@@ -1110,8 +1128,8 @@ Function Get-UIControl
             {
                 $ctrl.Enabled = $false
             }
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 foreach($key in $OtherAttributes.Keys)
                 {
                     switch($key)
@@ -1171,11 +1189,11 @@ Function Get-UIControl
                         }
                     }
                 }
-			}
+            }
 
             if(!$NoNewLine)
             {
-			     $global:vpos += 35
+                 $global:vpos += 35
             }
 
             If($OtherAttributes -ne $null -and $OtherAttributes["ToggleChildDisplay"] -ne $null)
@@ -1195,7 +1213,7 @@ Function Get-UIControl
                 }
                 [array]$arrSize = foreach($tmp in $arrTmp) {([int]::parse($tmp))}
 
-        		$col = @()
+                $col = @()
                 $col += $ctrl
                 $tmp = $ctrl | Select-Object -first 1
                 $tmp.Add_CheckedChanged({
@@ -1265,7 +1283,7 @@ Function Get-UIControl
 
             if($Size.Count -eq 2)
             {
-    			$ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
+                $ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
                 $ctrl.AutoSizeColumnsMode = [System.Windows.Forms.DataGridViewAutoSizeColumnsMode]::None
             }
             else
@@ -1422,7 +1440,7 @@ Function Get-UIControl
                 Switch($value[0].GetType().Name)
                 {
                     {($_ -eq "HashTable") -or ($_ -eq "SPPropertyBag") -or ($_ -eq 'Dictionary`2')} {
-    				    $value[0].Keys | ForEach-Object {
+                        $value[0].Keys | ForEach-Object {
                             $idx = $ctrl.Rows.Add()
 
                             $ctrl.Rows[$idx].Cells[0].Value = $_
@@ -1440,7 +1458,7 @@ Function Get-UIControl
                             {
                                 $ctrl.Rows[$idx].Cells[2].Value = "Delete"
                             }
-    				    }
+                        }
                     }
                     "String" { # just string array
                         $value | ForEach-Object {
@@ -1469,8 +1487,8 @@ Function Get-UIControl
                 }
             }
 
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 foreach($key in $OtherAttributes.Keys)
                 {
                     switch($key)
@@ -1638,7 +1656,7 @@ Function Get-UIControl
 
             if(!$NoNewLine)
             {
-			     $global:vpos += $ctrl.Height + 15
+                 $global:vpos += $ctrl.Height + 15
             }
         }
 
@@ -1646,7 +1664,7 @@ Function Get-UIControl
             switch($_)
             {
                 "listbox" {
-    				$ctrl = New-Object System.Windows.Forms.ListBox
+                    $ctrl = New-Object System.Windows.Forms.ListBox
                     if($Size.Count -gt 0 -and $Size[0] -gt 0)
                     {
                         if($Size.Count -eq 1)
@@ -1655,27 +1673,25 @@ Function Get-UIControl
                         }
                         else
                         {
-    				        $ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
+                            $ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
                         }
                     }
                     else
                     {
                         $ctrl.AutoSize = $true
                     }
-                    $ctrl.TabIndex = 1
                 }
                 "dropdown" {
-    				#https://msdn.microsoft.com/en-us/library/system.windows.forms.combobox_properties(v=vs.110).aspx
-    				$ctrl = New-Object System.Windows.Forms.ComboBox
-    				$ctrl.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
-    				$ctrl.TabIndex = 1
-    			    if($Size.Count -gt 0 -and $Size[0] -gt 0)
-    			    {
-    				    $ctrl.Size = New-Object System.Drawing.Size($size[0], 30)
-    			    }
+                    #https://msdn.microsoft.com/en-us/library/system.windows.forms.combobox_properties(v=vs.110).aspx
+                    $ctrl = New-Object System.Windows.Forms.ComboBox
+                    $ctrl.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
+                    if($Size.Count -gt 0 -and $Size[0] -gt 0)
+                    {
+                        $ctrl.Size = New-Object System.Drawing.Size($size[0], 30)
+                    }
                 }
                 "checklistbox" {
-    				$ctrl = New-Object System.Windows.Forms.CheckedListBox
+                    $ctrl = New-Object System.Windows.Forms.CheckedListBox
                     if($Size.Count -gt 0 -and $Size[0] -gt 0)
                     {
                         if($Size.Count -eq 1)
@@ -1685,7 +1701,7 @@ Function Get-UIControl
                         }
                         else
                         {
-    				        $ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
+                            $ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
                         }
                     }
                     else
@@ -1693,12 +1709,11 @@ Function Get-UIControl
                         $ctrl.AutoSize = $true
                     }
                     $ctrl.CheckOnClick = $true
-    				$ctrl.TabIndex = 1
                 }
             }
-			$ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
+            $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
             $ctrl.DisplayMember = "text"
-    		$ctrl.ValueMember = "value"
+            $ctrl.ValueMember = "value"
 
             if($mode -ne "edit")
             {
@@ -1706,8 +1721,8 @@ Function Get-UIControl
             }
             $blnFirstItemSelectable = $true
 
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 foreach($key in $OtherAttributes.Keys)
                 {
                     switch($key)
@@ -2068,33 +2083,33 @@ Function Get-UIControl
                             If($tmp -ne $null -and $tmp.Name -like "*Picker")
                             {
                                 if($this.Items.count -eq 0)
-						        {
-							        $this.FindForm().Tag.SetError($this, "Please select a person")
-							        $_.Cancel = $true
-						        }
-						        else
-						        {
-							        $this.FindForm().Tag.SetError($this, "")
-						        }
+                                {
+                                    $this.FindForm().Tag.SetError($this, "Please select a person")
+                                    $_.Cancel = $true
+                                }
+                                else
+                                {
+                                    $this.FindForm().Tag.SetError($this, "")
+                                }
                             }
                             else
                             {
                                 if($this -is [System.Windows.Forms.CheckedListBox])
                                 {
                                     if($this.CheckedItems.Count -eq 0)
-						            {
-							            $this.FindForm().Tag.SetError($this, "Please select an item")
-							            $_.Cancel = $true
-						            }
-						            else
-						            {
-							            $this.FindForm().Tag.SetError($this, "")
-						            }
+                                    {
+                                        $this.FindForm().Tag.SetError($this, "Please select an item")
+                                        $_.Cancel = $true
+                                    }
+                                    else
+                                    {
+                                        $this.FindForm().Tag.SetError($this, "")
+                                    }
                                 }
                                 else
                                 {
-						            if($this.SelectedIndex -eq -1)
-						            {
+                                    if($this.SelectedIndex -eq -1)
+                                    {
                                         $bad = $true
                                         if($this -is [System.Windows.Forms.Combobox] -and $this.DropDownStyle -eq [System.Windows.Forms.ComboBoxStyle]::DropDown)
                                         {
@@ -2102,18 +2117,18 @@ Function Get-UIControl
                                         }
                                         if($bad)
                                         {
-							                $this.FindForm().Tag.SetError($this, "Please select an item")
-							                $_.Cancel = $true
+                                            $this.FindForm().Tag.SetError($this, "Please select an item")
+                                            $_.Cancel = $true
                                         }
                                         else
                                         {
                                             $this.FindForm().Tag.SetError($this, "")
                                         }
-						            }
-						            else
-						            {
-							            $this.FindForm().Tag.SetError($this, "")
-						            }
+                                    }
+                                    else
+                                    {
+                                        $this.FindForm().Tag.SetError($this, "")
+                                    }
                                 }
                             }
                         })
@@ -2121,36 +2136,36 @@ Function Get-UIControl
                     else
                     {
                         $ctrl.Add_Validating({
-						    if($this.SelectedIndex -le 0)
-						    {
-							    $this.FindForm().Tag.SetError($this, "Please select an item")
-							    $_.Cancel = $true
-						    }
-						    else
-						    {
-							    $this.FindForm().Tag.SetError($this, "")
-						    }
+                            if($this.SelectedIndex -le 0)
+                            {
+                                $this.FindForm().Tag.SetError($this, "Please select an item")
+                                $_.Cancel = $true
+                            }
+                            else
+                            {
+                                $this.FindForm().Tag.SetError($this, "")
+                            }
                         })
                     }
                 }
                 elseif(!$blnFirstItemSelectable)
                 {
                     $ctrl.Add_Validating({
-						if($this.SelectedIndex -eq 0)
-						{
-							$this.FindForm().Tag.SetError($this, "Please select an item")
-							$_.Cancel = $true
-						}
-						else
-						{
-							$this.FindForm().Tag.SetError($this, "");
-						}
+                        if($this.SelectedIndex -eq 0)
+                        {
+                            $this.FindForm().Tag.SetError($this, "Please select an item")
+                            $_.Cancel = $true
+                        }
+                        else
+                        {
+                            $this.FindForm().Tag.SetError($this, "");
+                        }
                     })
                 }
 
                 if($OtherAttributes["OpenPicker"] -ne $null -and $ControlType -eq "listbox")
                 {
-	                $ctrl.Add_KeyDown({
+                    $ctrl.Add_KeyDown({
                         if ($_.KeyCode -eq "Delete")
                         {
                         for ($i = $this.selectedItems.Count - 1; $i -ge 0; $i--)
@@ -2160,34 +2175,34 @@ Function Get-UIControl
                         }
                     })
 
-					$col = @()
-					$col += $ctrl
-					$ctrl = New-Object System.Windows.Forms.Button
-					$ctrl.Location = New-Object System.Drawing.Point($($global:hpos+$size[0]), $global:vpos)
-					$ctrl.Size = New-Object System.Drawing.Size(22, 20)
-					$ctrl.Tag = $OtherAttributes["OpenPicker"]
-					$ctrl.Text = "..."
-					$ctrl.Add_Click({
-						$arr = $this.tag -split ","
-						$inFile = Get-UIFileOpenDialog $arr[2] $arr[1] $arr[0] -MultiSelect  #InitialDir, $Filter, Title
-						if(-not [System.String]::IsNullOrEmpty($inFile))
-						{
-							$idx = $this.Parent.Controls.IndexOf($this)-1
-							$tmp = [System.Windows.Forms.ListBox]$this.Parent.Controls[$idx]
+                    $col = @()
+                    $col += $ctrl
+                    $ctrl = New-Object System.Windows.Forms.Button
+                    $ctrl.Location = New-Object System.Drawing.Point($($global:hpos+$size[0]), $global:vpos)
+                    $ctrl.Size = New-Object System.Drawing.Size(22, 20)
+                    $ctrl.Tag = $OtherAttributes["OpenPicker"]
+                    $ctrl.Text = "..."
+                    $ctrl.Add_Click({
+                        $arr = $this.tag -split ","
+                        $inFile = Get-UIFileOpenDialog $arr[2] $arr[1] $arr[0] -MultiSelect  #InitialDir, $Filter, Title
+                        if(-not [System.String]::IsNullOrEmpty($inFile))
+                        {
+                            $idx = $this.Parent.Controls.IndexOf($this)-1
+                            $tmp = [System.Windows.Forms.ListBox]$this.Parent.Controls[$idx]
                             $inFile | ForEach-Object {
                                 if($($tmp.FindString($_) -eq -1))
                                 {
-							        $tmp.Items.Add($_)
+                                    $tmp.Items.Add($_)
                                 }
                             }
-						}
-					})
-					$col += $ctrl
-					$ctrl = $col
+                        }
+                    })
+                    $col += $ctrl
+                    $ctrl = $col
                 }
 
                 if($OtherAttributes["PeoplePicker"] -ne $null -or $OtherAttributes["PersonPicker"] -ne $null -or $OtherAttributes["GroupPicker"] -ne $null -or $OtherAttributes["GroupsPicker"] -ne $null)
-				{
+                {
                     $blnGroup = $($OtherAttributes["GroupPicker"] -ne $null -or $OtherAttributes["GroupsPicker"] -ne $null)
                     if($OtherAttributes["PersonPicker"] -ne $null -or $OtherAttributes["GroupPicker"] -ne $null)
                     {
@@ -2197,29 +2212,29 @@ Function Get-UIControl
                     {
                         $ctrl.SelectionMode = [System.Windows.Forms.SelectionMode]::MultiExtended
                     }
-	                $ctrl.DisplayMember = "text"
-	                $ctrl.ValueMember = "value"
-	                $ctrl.Add_KeyDown({if ($_.KeyCode -eq "Delete") {
+                    $ctrl.DisplayMember = "text"
+                    $ctrl.ValueMember = "value"
+                    $ctrl.Add_KeyDown({if ($_.KeyCode -eq "Delete") {
                         for ($i = $this.selectedItems.Count - 1; $i -ge 0; $i--)
                         {
                             $this.Items.Remove($this.selectedItems[$i])
                         }
                     }})
 
-					$col = @()
-					$col += $ctrl
+                    $col = @()
+                    $col += $ctrl
                     $global:hpos += $ctrl.Width + 5
 
-					$col += $(Get-ADPickerButton $($ctrl.SelectionMode -eq [System.Windows.Forms.SelectionMode]::MultiExtended) $OtherAttributes["PickerFields"] $blnGroup)
-					$ctrl = $col
+                    $col += $(Get-ADPickerButton $($ctrl.SelectionMode -eq [System.Windows.Forms.SelectionMode]::MultiExtended) $OtherAttributes["PickerFields"] $blnGroup)
+                    $ctrl = $col
                 }
             }
 
-			if(!$NoNewLine)
-			{
+            if(!$NoNewLine)
+            {
                 $tmp = $ctrl | Select-Object -First 1
-            	$global:vpos += $tmp.ClientSize.Height + 20
-			}
+                $global:vpos += $tmp.ClientSize.Height + 20
+            }
 
             If($OtherAttributes -ne $null -and $OtherAttributes["ToggleChildDisplay"] -ne $null)
             {
@@ -2238,7 +2253,7 @@ Function Get-UIControl
                 }
                 [array]$arrSize = foreach($tmp in $arrTmp) {([int]::parse($tmp))}
 
-        		$col = @()
+                $col = @()
                 $col += $ctrl
                 $tmp = $ctrl | Select-Object -First 1
                 $tmp.Add_SelectedIndexChanged({
@@ -2272,12 +2287,12 @@ Function Get-UIControl
         }
 
         "groupbox" {
-		    $ctrl = New-Object System.Windows.Forms.GroupBox
+            $ctrl = New-Object System.Windows.Forms.GroupBox
             $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-			if($size -ne $null -and $size.Count -eq 2)
-			{
-			     $ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
-			}
+            if($size -ne $null -and $size.Count -eq 2)
+            {
+                 $ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
+            }
             else
             {
                 $ctrl.AutoSize = $true
@@ -2285,8 +2300,8 @@ Function Get-UIControl
                 $ctrl.MinimumSize = New-Object System.Drawing.Size(100,20)
             }
             $ctrl.Text = " {0} " -f $value
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 foreach($key in $OtherAttributes.Keys)
                 {
                     switch($key)
@@ -2309,23 +2324,23 @@ Function Get-UIControl
             }
         }
 
-		"header" {
-			$global:hpos = 22
+        "header" {
+            $global:hpos = 22
 
-			$col = @()
+            $col = @()
             $ctrl = New-Object System.Windows.Forms.Label
             $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-			$ctrl.Font = New-Object System.Drawing.Font("arial",11,[System.Drawing.FontStyle]::Bold)
-			$ctrl.Forecolor = "Blue"
-			if($value -ne $null)
+            $ctrl.Font = New-Object System.Drawing.Font("arial",11,[System.Drawing.FontStyle]::Bold)
+            $ctrl.Forecolor = "Blue"
+            if($value -ne $null)
             {
-				$ctrl.Text = $value[0]
-			}
-			$ctrl.AutoSize = $true
-			$col+= $ctrl
+                $ctrl.Text = $value[0]
+            }
+            $ctrl.AutoSize = $true
+            $col+= $ctrl
 
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 foreach($key in $OtherAttributes.Keys)
                 {
                     switch($key)
@@ -2349,28 +2364,28 @@ Function Get-UIControl
                         }
                     }
                 }
-			}
-			$global:vpos += 25
+            }
+            $global:vpos += 25
 
             $sctrl = New-Object System.Windows.Forms.Label
             $sctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-			$sctrl.AutoSize = $false
-			$sctrl.BorderStyle = [System.Windows.Forms.BorderStyle]::Fixed3D
+            $sctrl.AutoSize = $false
+            $sctrl.BorderStyle = [System.Windows.Forms.BorderStyle]::Fixed3D
             if($size -ne $null)
             {
-			     $sctrl.Size = New-Object System.Drawing.Size($size[0], 2)
+                 $sctrl.Size = New-Object System.Drawing.Size($size[0], 2)
             }
             else
             {
-			     $sctrl.Size = New-Object System.Drawing.Size(600, 2)
+                 $sctrl.Size = New-Object System.Drawing.Size(600, 2)
             }
-			$col+= $sctrl
+            $col+= $sctrl
 
-			$ctrl = $col
+            $ctrl = $col
             $global:vpos += 10
         }
 
-		"help" {
+        "help" {
             $ctrl = New-Object System.Windows.Forms.Label
             $ctrl.AutoSize = $true
             $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
@@ -2388,7 +2403,7 @@ Function Get-UIControl
                 {
                     $tmp = $value[0]
                 }
-			    Set-UITooltip $ctrl "Click to see help"
+                Set-UITooltip $ctrl "Click to see help"
                 $ctrl.Add_MouseHover({
                     $this.Cursor = [System.Windows.Forms.Cursors]::Hand
                 })
@@ -2401,7 +2416,7 @@ Function Get-UIControl
                 })
                 $ctrl.tag = $tmp
                 if($OtherAttributes -ne $null -and $OtherAttributes["FileNotFound"] -ne $null)
-			    {
+                {
                     $ctrl.Tag += ",{0}" -f $OtherAttributes["FileNotFound"]
                 }
                 $ctrl.Add_Click({
@@ -2411,120 +2426,120 @@ Function Get-UIControl
             }
             else
             {
-			    Set-UITooltip $ctrl $value[0].Replace("\n", [System.Environment]::NewLine)
+                Set-UITooltip $ctrl $value[0].Replace("\n", [System.Environment]::NewLine)
             }
-			if($OtherAttributes -ne $null -and $OtherAttributes["NoNewLine"] -ne $null) #used to name NoLineFeed
-			{
+            if($OtherAttributes -ne $null -and $OtherAttributes["NoNewLine"] -ne $null) #used to name NoLineFeed
+            {
                $NoNewLine = $true
                $global:hpos += $ctrl.Width + 5
             }
-			else
-			{
-				$global:vpos += 20
-			}
-		}
+            else
+            {
+                $global:vpos += 20
+            }
+        }
 
-		"image" {
+        "image" {
             $ctrl = New-Object System.Windows.Forms.PictureBox
-			$ctrl.SizeMode = [System.Windows.Forms.PictureBoxSizeMode]::StretchImage
+            $ctrl.SizeMode = [System.Windows.Forms.PictureBoxSizeMode]::StretchImage
             if($Size.Count -gt 0 -and $Size[0] -gt 0)
             {
-			     $ctrl.ClientSize = New-Object System.Drawing.Size($size[0], $size[1])
+                 $ctrl.ClientSize = New-Object System.Drawing.Size($size[0], $size[1])
             }
             else
             {
-			     $ctrl.ClientSize = New-Object System.Drawing.Size(0,0)
+                 $ctrl.ClientSize = New-Object System.Drawing.Size(0,0)
             }
             $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
             $imgNew = ""
             $imgDesc = ""
 
-			if($value -ne $null -and $value[0] -ne "" -and $OtherAttributes["IconElements"] -eq $null)
-			{
+            if($value -ne $null -and $value[0] -ne "" -and $OtherAttributes["IconElements"] -eq $null)
+            {
                 $imgNew = $value[0]
-			}
+            }
 
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 if($OtherAttributes["Default"] -ne $null -and $null -eq $value)
                 {
-					$value = $OtherAttributes["Default"]
+                    $value = $OtherAttributes["Default"]
                 }
 
-				if($OtherAttributes["Name"] -ne $null)
-				{
-					$ctrl.Name = $OtherAttributes["Name"]
-				}
+                if($OtherAttributes["Name"] -ne $null)
+                {
+                    $ctrl.Name = $OtherAttributes["Name"]
+                }
 
                 ### don't use "$value -ne $null", change it to "$value.count -gt 0"
                 if($OtherAttributes["IconElements"] -ne $null)
                 {
-					if($value.count -gt 0)
-					{
-						# A|a.png,B|b.png
-						$col = $OtherAttributes["IconElements"] -split ","
-						ForEach($c in $col)
-                		{
-							if($c.Contains("|"))
-							{
-								$blnLocated = $false
-        						$arr = $c.split("|")
-								if($value[0] -is [Boolean])
-								{
-									if(($arr[0] -eq "true" -and $value[0]) -or ($arr[0] -eq "false" -and !$value[0]))
-									{
-										$blnLocated = $true
-									}
-								}
-								elseif($arr[0] -eq $value[0])
-								{
-									$blnLocated = $true
-								}
+                    if($value.count -gt 0)
+                    {
+                        # A|a.png,B|b.png
+                        $col = $OtherAttributes["IconElements"] -split ","
+                        ForEach($c in $col)
+                        {
+                            if($c.Contains("|"))
+                            {
+                                $blnLocated = $false
+                                $arr = $c.split("|")
+                                if($value[0] -is [Boolean])
+                                {
+                                    if(($arr[0] -eq "true" -and $value[0]) -or ($arr[0] -eq "false" -and !$value[0]))
+                                    {
+                                        $blnLocated = $true
+                                    }
+                                }
+                                elseif($arr[0] -eq $value[0])
+                                {
+                                    $blnLocated = $true
+                                }
 
-								if($blnLocated)
-								{
-									if(!$arr[1].Contains("."))
-									{
-										$imgNew = $arr[1] + ".png"
-									}
-									else
-									{
-										$imgNew = $arr[1]
-									}
-									if($OtherAttributes["IconDescription"] -ne $null)
-									{
-										$imgDesc = $arr[0]
-									}
-									break
-								}
-							}
-							else
-							{
-								$imgNew = $c
-								if($OtherAttributes["IconDescription"] -ne $null)
-								{
-									$imgDesc = $value
-								}
-								break
-							}
-						}
-					}
-					else
-					{
-						$imgNew = $OtherAttributes["IconElements"]
-					}
+                                if($blnLocated)
+                                {
+                                    if(!$arr[1].Contains("."))
+                                    {
+                                        $imgNew = $arr[1] + ".png"
+                                    }
+                                    else
+                                    {
+                                        $imgNew = $arr[1]
+                                    }
+                                    if($OtherAttributes["IconDescription"] -ne $null)
+                                    {
+                                        $imgDesc = $arr[0]
+                                    }
+                                    break
+                                }
+                            }
+                            else
+                            {
+                                $imgNew = $c
+                                if($OtherAttributes["IconDescription"] -ne $null)
+                                {
+                                    $imgDesc = $value
+                                }
+                                break
+                            }
+                        }
+                    }
+                    else
+                    {
+                        $imgNew = $OtherAttributes["IconElements"]
+                    }
                 }
 
-				if($OtherAttributes["Help"] -ne $null)
+                if($OtherAttributes["Help"] -ne $null)
                 {
                     Set-UITooltip $ctrl $OtherAttributes["Help"]
                 }
 
-				if($OtherAttributes["NoNewLine"] -ne $null)
+                if($OtherAttributes["NoNewLine"] -ne $null)
                 {
                     $NoNewLine = $OtherAttributes["NoNewLine"]
                 }
-			}
+            }
 
             if($imgNew -ne "")
             {
@@ -2557,17 +2572,17 @@ Function Get-UIControl
                         $img = Get-ImagefromFile $("$env:dp\Assets\{0}" -f $imgNew)
                     }
                 }
-				$ctrl.Image = $img
+                $ctrl.Image = $img
                 if($Size.Count -gt 0 -and $Size[0] -gt 0) {}
                 else
                 {
                     $ctrl.ClientSize = New-Object System.Drawing.Size($img.Width, $img.Height)
                 }
 
-    			if($imgDesc -ne "")
+                if($imgDesc -ne "")
                 {
-    				$col = @()
-    				$col += $ctrl
+                    $col = @()
+                    $col += $ctrl
                     switch($OtherAttributes["IconDescription"])
                     {
                         # Right side
@@ -2580,7 +2595,7 @@ Function Get-UIControl
                             $global:vpos += $ctrl.Height
                         }
                     }
-    				$ctrl = Get-UIControl "label" $imgDesc 0 "" @{NoNewLine=1}
+                    $ctrl = Get-UIControl "label" $imgDesc 0 "" @{NoNewLine=1}
 
                     # Shift to center
                     if($OtherAttributes["IconDescription"] -eq "2")
@@ -2613,49 +2628,49 @@ Function Get-UIControl
                 $tmp = $ctrl | Select-Object -First 1
                 if($tmp.Visible)
                 {
-            	    $global:vpos += $tmp.ClientSize.Height + 5
+                    $global:vpos += $tmp.ClientSize.Height + 5
                     if($tmp.ClientSize.Height -lt 30)
                     {
                         $global:vpos += $(30 - $tmp.ClientSize.Height)
                     }
                 }
             }
-		}
+        }
 
-		"label" {
+        "label" {
             $ctrl = New-Object System.Windows.Forms.Label
             $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-			if($Size.Count -gt 0 -and $Size[0] -gt 0 -and $value -ne $null)
-			{
-				if($size.Length -gt 1)
-				{
-					$ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
-			        #$global:vpos += $size[1]
-				}
-				else
-				{
-					$ctrl.Size = New-Object System.Drawing.Size($size[0], 30)
-				}
-			}
-			else
-			{
-	            $ctrl.AutoSize = $true
-			}
+            if($Size.Count -gt 0 -and $Size[0] -gt 0 -and $value -ne $null)
+            {
+                if($size.Length -gt 1)
+                {
+                    $ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
+                    #$global:vpos += $size[1]
+                }
+                else
+                {
+                    $ctrl.Size = New-Object System.Drawing.Size($size[0], 30)
+                }
+            }
+            else
+            {
+                $ctrl.AutoSize = $true
+            }
 
             if(![string]::IsNullOrEmpty($value))                                              ###($value -ne $null) -> issue when $value = 0
             {
                 $ctrl.Text = $value[0]
-			}
+            }
 
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 if($value -eq $null)
-				{
+                {
                     if($OtherAttributes["Default"] -ne $null)
                     {
-					    $ctrl.Text = $OtherAttributes["Default"]
+                        $ctrl.Text = $OtherAttributes["Default"]
                     }
-				}
+                }
                 else
                 {
                     $ctrl.Tag = $Value -join ","
@@ -2702,34 +2717,34 @@ Function Get-UIControl
                     }
                 }
 
-				if($OtherAttributes["Name"] -ne $null)
-				{
-					$ctrl.Name = $OtherAttributes["Name"]
-				}
-				if($OtherAttributes["Alignment"] -ne $null)
-				{
-					$tmp = [System.Drawing.ContentAlignment]$($OtherAttributes["Alignment"])
-					$ctrl.TextAlign = $tmp
-				}
+                if($OtherAttributes["Name"] -ne $null)
+                {
+                    $ctrl.Name = $OtherAttributes["Name"]
+                }
+                if($OtherAttributes["Alignment"] -ne $null)
+                {
+                    $tmp = [System.Drawing.ContentAlignment]$($OtherAttributes["Alignment"])
+                    $ctrl.TextAlign = $tmp
+                }
 
-				if($OtherAttributes["FontName"] -ne $null -or $OtherAttributes["Fontsize"] -ne $null)
-				{
+                if($OtherAttributes["FontName"] -ne $null -or $OtherAttributes["Fontsize"] -ne $null)
+                {
                     $tmpFont = "Microsoft Sans Serif"
                     if($OtherAttributes["FontName"] -ne $null) { $tmpFont = $OtherAttributes["FontName"] }
                     $tmpSize = 8
                     if($OtherAttributes["FontSize"] -ne $null) { $tmpSize = [int]$OtherAttributes["FontSize"] }
-					$ctrl.Font = New-Object System.Drawing.Font($tmpFont,$tmpSize,[System.Drawing.FontStyle]::Regular);
-				}
+                    $ctrl.Font = New-Object System.Drawing.Font($tmpFont,$tmpSize,[System.Drawing.FontStyle]::Regular);
+                }
 
-				if($OtherAttributes["Backcolor"] -ne $null)
-				{
-					$ctrl.BackColor = $OtherAttributes["backcolor"]
-				}
+                if($OtherAttributes["Backcolor"] -ne $null)
+                {
+                    $ctrl.BackColor = $OtherAttributes["backcolor"]
+                }
 
-				if($OtherAttributes["BorderStyle"] -ne $null)
-				{
-					$ctrl.BorderStyle = [System.Windows.Forms.BorderStyle]$($OtherAttributes["BorderStyle"])
-				}
+                if($OtherAttributes["BorderStyle"] -ne $null)
+                {
+                    $ctrl.BorderStyle = [System.Windows.Forms.BorderStyle]$($OtherAttributes["BorderStyle"])
+                }
 
                 if($OtherAttributes["Tooltip"] -ne $null)
                 {
@@ -2737,9 +2752,9 @@ Function Get-UIControl
                 }
 
                 if($OtherAttributes["Copy"] -ne $null -and $ctrl.Visible -and $ctrl.Text -ne "")
-				{
-					$col = @()
-					$col += $ctrl
+                {
+                    $col = @()
+                    $col += $ctrl
                     if($size.Length -gt 1)
                     {
                         $global:hpos += $ctrl.Width + 5
@@ -2749,27 +2764,27 @@ Function Get-UIControl
                         $global:hpos += $ctrl.PreferredSize.Width + 5
                     }
                     $global:vpos = $ctrl.top
-					$col += $(Get-CopyButton)
-					$ctrl = $col
-				}
+                    $col += $(Get-CopyButton)
+                    $ctrl = $col
+                }
 
-				if($OtherAttributes["Help"] -ne $null -and $ctrl.Visible)
-				{
-			        $col = @()
+                if($OtherAttributes["Help"] -ne $null -and $ctrl.Visible)
+                {
+                    $col = @()
                     $col += $ctrl
                     $global:hpos += $ctrl.PreferredSize.Width + 5
-					$ctrl = Get-UIControl "help" $OtherAttributes["Help"] 0 "" @{NoNewLine=1}
+                    $ctrl = Get-UIControl "help" $OtherAttributes["Help"] 0 "" @{NoNewLine=1}
                     $col += $ctrl
                     $ctrl = $col
                     $global:hpos = 22
-				}
-				elseif($OtherAttributes["NoNewLine"] -ne $null)
+                }
+                elseif($OtherAttributes["NoNewLine"] -ne $null)
                 {
                     $NoNewLine = $OtherAttributes["NoNewLine"]
                     $tmp = $ctrl | Select-Object -last 1
                     $global:hpos += $tmp.PreferredSize.Width + 5
                 }
-			}
+            }
 
             # Adjust height when long text is provided exceeding the height after text wrapping
             if(!$ctrl.AutoSize -and $size.Length -eq 1)
@@ -2793,37 +2808,37 @@ Function Get-UIControl
             }
         }
 
-		"link" {
+        "link" {
             $ctrl = New-Object System.Windows.Forms.LinkLabel
             $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-			if($Size.Count -gt 0 -and $Size[0] -gt 0)
-			{
-				$ctrl.Size = New-Object System.Drawing.Size($size[0], 30)
-			}
-			else
-			{
-	            $ctrl.AutoSize = $true
-			}
+            if($Size.Count -gt 0 -and $Size[0] -gt 0)
+            {
+                $ctrl.Size = New-Object System.Drawing.Size($size[0], 30)
+            }
+            else
+            {
+                $ctrl.AutoSize = $true
+            }
             if($value -ne $null)
             {
                 if($OtherAttributes -ne $null -and $OtherAttributes["NoBrowserLaunch"] -ne $null)
                 {}
                 else
                 {
-    			    $ctrl.add_LinkClicked({
+                    $ctrl.add_LinkClicked({
                         #if($this.Links[0].LinkData -like "http*")
                         #{
-    				        Open-IETabs $([system.Environment]::ExpandEnvironmentVariables($this.Links[0].LinkData))
+                            Open-IETabs $([system.Environment]::ExpandEnvironmentVariables($this.Links[0].LinkData))
                         #}
-    			    })
+                    })
                 }
 
                 $ctrl.Text = $value[0]
                 $ctrl.Links.Add(0, $ctrl.Text.Length, $ctrl.Text) | Out-Null
             }
 
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 $col = @()
                 $col += $ctrl
 
@@ -2885,23 +2900,23 @@ Function Get-UIControl
                     }
                 }
 
-				if($OtherAttributes["Text"] -ne $null)
-				{
-					$ctrl.Text = $OtherAttributes["Text"]
+                if($OtherAttributes["Text"] -ne $null)
+                {
+                    $ctrl.Text = $OtherAttributes["Text"]
                     $ctrl.Links[0].Length = $ctrl.Text.Length
-				}
-				else
+                }
+                else
                 {
                     if($value -eq $null)
                     {
                         if($OtherAttributes["Default"] -ne $null)
-				        {
-					        $ctrl.Text = $OtherAttributes["Default"]
+                        {
+                            $ctrl.Text = $OtherAttributes["Default"]
                             if($OtherAttributes["DefaultDisabled"])
                             {
                                 $ctrl.Enabled = $false
                             }
-				        }
+                        }
                     }
                     else
                     {
@@ -2952,7 +2967,7 @@ Function Get-UIControl
                 }
 
                 $ctrl = $col
-			}
+            }
 
             if($value -ne $null)
             {
@@ -2968,7 +2983,7 @@ Function Get-UIControl
                 {
                     $c.Text = $value[0]
                 }
-    			If($OtherAttributes -ne $null -and $OtherAttributes["Help"] -eq $null -and $value[0] -Like "http*")
+                If($OtherAttributes -ne $null -and $OtherAttributes["Help"] -eq $null -and $value[0] -Like "http*")
                 {
                     Set-UITooltip $c $value[0]
                 }
@@ -2980,15 +2995,15 @@ Function Get-UIControl
             }
         }
 
-		"listview" {
-			$ctrl = New-Object System.Windows.Forms.ListView
-			$ctrl.FullRowSelect = $true
-			$ctrl.HideSelection = $false
+        "listview" {
+            $ctrl = New-Object System.Windows.Forms.ListView
+            $ctrl.FullRowSelect = $true
+            $ctrl.HideSelection = $false
             $ctrl.AllowColumnReorder = $true
             $ctrl.GridLines = $true
-			$ctrl.View = "Details"   # LargeIcon[default], SmallIcon, Tile, List
-			$ctrl.BorderStyle = [System.Windows.Forms.BorderStyle]::None
-			#$ctrl.BackColor = "Transparent"
+            $ctrl.View = "Details"   # LargeIcon[default], SmallIcon, Tile, List
+            $ctrl.BorderStyle = [System.Windows.Forms.BorderStyle]::None
+            #$ctrl.BackColor = "Transparent"
             $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
 
             $ctrl.Add_KeyDown({
@@ -2997,7 +3012,7 @@ Function Get-UIControl
                     $txt = ""
                     $this.SelectedItems | ForEach-Object {
                         $_.subItems | ForEach-Object {
-                            $txt += $_.Text + "`t"
+                            $txt = $txt + $_.Text + "`t"
                         }
                         $txt += $_.Text + "`r`n"
                     }
@@ -3060,7 +3075,7 @@ Function Get-UIControl
                                 {
                                     $CurrentPath = ("{0}\{1}" -f $this.Tag,$this.SelectedItems[0].Text)
                                     $pfobject = New-Object -TypeName PSObject -Property @{
-                            	        Name = ".."
+                                        Name = ".."
                                         Type = "D"
                                     }
                                     $col += $pfobject
@@ -3080,30 +3095,30 @@ Function Get-UIControl
                 Switch($value[0].GetType().Name)
                 {
                     {($_ -eq "HashTable") -or ($_ -eq "SPPropertyBag") -or ($_ -eq 'Dictionary`2')} {
-    			        $subWidth = 120
-    				    if($Size.Count -gt 0 -and $size[0] -gt 0)
-    				    {
-    					    $subWidth= $size[0]
-    				    }
-    				    $allWidth += $subWidth
-    				    $ctrl.Columns.Add("Key", $subWidth) | Out-Null
+                        $subWidth = 120
+                        if($Size.Count -gt 0 -and $size[0] -gt 0)
+                        {
+                            $subWidth= $size[0]
+                        }
+                        $allWidth += $subWidth
+                        $ctrl.Columns.Add("Key", $subWidth) | Out-Null
 
-    				    $subWidth = 120
-    				    if($size.Count -gt 1)
-    				    {
-    					    $subWidth= $size[1]
-    				    }
-    				    $allWidth += $subWidth
-    				    $ctrl.Columns.Add("Value", $subWidth) | Out-Null
+                        $subWidth = 120
+                        if($size.Count -gt 1)
+                        {
+                            $subWidth= $size[1]
+                        }
+                        $allWidth += $subWidth
+                        $ctrl.Columns.Add("Value", $subWidth) | Out-Null
                     }
                     "String" { # just string array
-    			        $subWidth = 120
-    				    if($Size.Count -gt 0 -and $size[0] -gt 0)
-    				    {
-    					    $subWidth= $size[0]
-    				    }
-    				    $allWidth += $subWidth
-    				    $ctrl.Columns.Add("Value", $subWidth) | Out-Null
+                        $subWidth = 120
+                        if($Size.Count -gt 0 -and $size[0] -gt 0)
+                        {
+                            $subWidth= $size[0]
+                        }
+                        $allWidth += $subWidth
+                        $ctrl.Columns.Add("Value", $subWidth) | Out-Null
                     }
                     default {
                         if($OtherAttributes -ne $null -and $OtherAttributes["Elements"] -ne $null)
@@ -3228,14 +3243,14 @@ Function Get-UIControl
 
                 if($value.Count)
                 {
-				    if($value[0].GetType().Name -eq "HashTable" -or $value[0].GetType().Name -eq "SPPropertyBag" -or $value[0].GetType().Name -eq 'Dictionary`2')
-				    {
-					    $allHeight = ($value[0].Count+2)*17
-				    }
-				    else
-				    {
-					    $allHeight = ($value.Count+2)*17
-				    }
+                    if($value[0].GetType().Name -eq "HashTable" -or $value[0].GetType().Name -eq "SPPropertyBag" -or $value[0].GetType().Name -eq 'Dictionary`2')
+                    {
+                        $allHeight = ($value[0].Count+2)*17
+                    }
+                    else
+                    {
+                        $allHeight = ($value.Count+2)*17
+                    }
                 }
                 else
                 {
@@ -3247,9 +3262,9 @@ Function Get-UIControl
                 Switch($value[0].GetType().Name)
                 {
                     {($_ -eq "HashTable") -or ($_ -eq "SPPropertyBag") -or ($_ -eq 'Dictionary`2')} {
-					    $i = 0
-    				    $value[0].Keys | ForEach-Object {
-    					    $tmp = $ctrl.Items.Add($_)
+                        $i = 0
+                        $value[0].Keys | ForEach-Object {
+                            $tmp = $ctrl.Items.Add($_)
                             if($value[0][$_] -eq $null)
                             {
                                 $tmp.SubItems.Add("") | Out-Null
@@ -3259,16 +3274,16 @@ Function Get-UIControl
                                 $tmp.SubItems.Add($value[0][$_].ToString()) | Out-Null
                             }
 
-							if($OtherAttributes["AlternatingColor"] -ne $null -and ($i % 2) -eq 1)
+                            if($OtherAttributes["AlternatingColor"] -ne $null -and ($i % 2) -eq 1)
                             {
                                 $tmp.BackColor = $OtherAttributes["AlternatingColor"]
                             }
                             $i++
-    				    }
+                        }
                     }
                     "String" { # just string array
                         $value | ForEach-Object {
-    					    $tmp = $ctrl.Items.Add($_)
+                            $tmp = $ctrl.Items.Add($_)
                         }
                     }
                     default {
@@ -3279,22 +3294,22 @@ Function Get-UIControl
                         }
 
                         $i = 0
-    				    $value | ForEach-Object {
-    					    $element = $_
+                        $value | ForEach-Object {
+                            $element = $_
                             if($element -ne $null -and $element.gettype().Name -like "SPAcl*") {
                                 $element = $element[0]
                             }   #weird datatype
-    					    $blnName = $true
-    					    $props | ForEach-Object {
-    						    if($blnName)
-    						    {
+                            $blnName = $true
+                            $props | ForEach-Object {
+                                if($blnName)
+                                {
                                     if($element.$_ -eq $null)
                                     {
                                         $tmp = $ctrl.Items.Add("")
                                     }
                                     else
                                     {
-        							    $tmp = $ctrl.Items.Add($element.$_.ToString(), $element.$_.ToString(),0)
+                                        $tmp = $ctrl.Items.Add($element.$_.ToString(), $element.$_.ToString(),0)
                                     }
 
                                     if($element.$iconfld -eq $null -or $element.$iconfld -eq [DBNull]::Value)
@@ -3337,13 +3352,13 @@ Function Get-UIControl
                                             }
                                         }
                                     }
-        							$blnName = $false
-    						    }
-    						    else
-    						    {
+                                    $blnName = $false
+                                }
+                                else
+                                {
                                     if($element.$_ -ne $null)
                                     {
-    							        $subItem = $tmp.SubItems.Add($element.$_.ToString())
+                                        $subItem = $tmp.SubItems.Add($element.$_.ToString())
                                         if($OtherAttributes -ne $null)
                                         {
                                             if($OtherAttributes["TextTransform"] -ne $null)
@@ -3356,7 +3371,7 @@ Function Get-UIControl
                                                     {
                                                         $arrTR = $arrTRS[1] -split ","
                                                         ForEach($txt in $arrTR)
-        				                                {
+                                                        {
                                                             if($txt.Contains("|"))
                                                             {
                                                                 $arrT = $txt.split("|")
@@ -3490,26 +3505,26 @@ Function Get-UIControl
                                         #write "" for null
                                         $tmp.SubItems.Add("") | Out-Null
                                     }
-    						    }
+                                }
                                 if($OtherAttributes -ne $null -and $OtherAttributes["ToolTip"] -ne $null -and $_ -eq $OtherAttributes["ToolTip"] -and $element.$_ -ne $null)
                                 {
                                     $tmp.TooltipText = $element.$_.ToString()
                                 }
-    					    }
+                            }
 
                             if($OtherAttributes -ne $null -and $OtherAttributes["AlternatingColor"] -ne $null -and ($i % 2) -eq 1)
                             {
                                 $tmp.BackColor = $OtherAttributes["AlternatingColor"]
                             }
                             $i++
-    				    }
+                        }
                     }
                 }
             }
 
-			$ctrl.Add_ColumnClick({
+            $ctrl.Add_ColumnClick({
 <#				$this.ListViewItemSorter = New-Object ListViewItemComparer($_.Column)
-				$this.Sort()  #this old one has bugs and supports ascending sort only#>
+                $this.Sort()  #this old one has bugs and supports ascending sort only#>
 
                 if($_.Column -lt $($this.Columns.Count-1))
                 {
@@ -3519,19 +3534,19 @@ Function Get-UIControl
                     }
                     if ( $_.Column -eq $this.ListViewItemSorter.SortColumn )
                     {
-                    	if ($this.ListViewItemSorter.Order -eq [System.Windows.Forms.SortOrder]::Ascending)
-                    	{
-                    		$this.ListViewItemSorter.Order = [System.Windows.Forms.SortOrder]::Descending
-                    	}
-                    	else
-                    	{
-                    		$this.ListViewItemSorter.Order = [System.Windows.Forms.SortOrder]::Ascending
-                    	}
+                        if ($this.ListViewItemSorter.Order -eq [System.Windows.Forms.SortOrder]::Ascending)
+                        {
+                            $this.ListViewItemSorter.Order = [System.Windows.Forms.SortOrder]::Descending
+                        }
+                        else
+                        {
+                            $this.ListViewItemSorter.Order = [System.Windows.Forms.SortOrder]::Ascending
+                        }
                     }
                     else
                     {
-                    	$this.ListViewItemSorter.SortColumn = $_.Column
-                    	$this.ListViewItemSorter.Order = [System.Windows.Forms.SortOrder]::Ascending
+                        $this.ListViewItemSorter.SortColumn = $_.Column
+                        $this.ListViewItemSorter.Order = [System.Windows.Forms.SortOrder]::Ascending
                     }
                     $this.Sort();
                 }
@@ -3543,7 +3558,7 @@ Function Get-UIControl
                     $ctrl = Get-UIControl "checklistbox" $VisibleColumns 180,140 "edit" @{Name="clbColumn";Elements=$AllColumns}
                     $form2.Controls.Add($ctrl)
 
-                	$btnOK = $form2.Controls.Find("btnOK",$true)[0]
+                    $btnOK = $form2.Controls.Find("btnOK",$true)[0]
                     if($btnOK -ne $null)
                     {
                         $btnOK.Add_Click({
@@ -3584,71 +3599,71 @@ Function Get-UIControl
                         }
                     }
                 }
-			})
+            })
 
-			if($OtherAttributes -ne $null)
-			{
-				if($OtherAttributes["Backcolor"] -ne $null)
-				{
-					$ctrl.BackColor = $OtherAttributes["backcolor"]
-				}
+            if($OtherAttributes -ne $null)
+            {
+                if($OtherAttributes["Backcolor"] -ne $null)
+                {
+                    $ctrl.BackColor = $OtherAttributes["backcolor"]
+                }
 
-				if($OtherAttributes["HotTracking"] -ne $null)
-				{
-					$ctrl.HotTracking = $OtherAttributes["HotTracking"]
-				}
+                if($OtherAttributes["HotTracking"] -ne $null)
+                {
+                    $ctrl.HotTracking = $OtherAttributes["HotTracking"]
+                }
 
-				if($OtherAttributes["HeaderStyle"] -ne $null)
-				{
+                if($OtherAttributes["HeaderStyle"] -ne $null)
+                {
                     # Clickable, Nonclickable, None (hide it)
-					$ctrl.HeaderStyle = $OtherAttributes["HeaderStyle"]
-				}
+                    $ctrl.HeaderStyle = $OtherAttributes["HeaderStyle"]
+                }
 
-				if($OtherAttributes["Tooltip"] -ne $null)
-				{
-					$ctrl.ShowItemTooltips = $true
-				}
+                if($OtherAttributes["Tooltip"] -ne $null)
+                {
+                    $ctrl.ShowItemTooltips = $true
+                }
 
-				if($OtherAttributes["Name"] -ne $null)
-				{
-					$ctrl.Name = $OtherAttributes["Name"]
-				}
+                if($OtherAttributes["Name"] -ne $null)
+                {
+                    $ctrl.Name = $OtherAttributes["Name"]
+                }
 
-				if($OtherAttributes["GroupElement"] -ne $null)
-				{
+                if($OtherAttributes["GroupElement"] -ne $null)
+                {
                     $tmp = GroupListView $ctrl $OtherAttributes["GroupElement"]
                     if($tmp -and $allHeight -gt 0)
                     {
                         $ctrl.Height += $ctrl.Groups.Count * 47
                     }
-				}
+                }
 
-				if($OtherAttributes["IconElements"] -ne $null)
-				{
+                if($OtherAttributes["IconElements"] -ne $null)
+                {
                     if($OtherAttributes["IconElements"] -is [System.Windows.Forms.ImageList])
                     {
                         $ctrl.SmallImageList = $OtherAttributes["IconElements"]
                     }
                     else
                     {
-    					$sctrl = New-Object System.Windows.Forms.ImageList
-    					$sctrl.ImageSize = New-Object System.Drawing.Size(16,16)
-    					if($OtherAttributes["IconSize"] -ne $null)
-    					{
-    						$intSize = [system.int32]::Parse($OtherAttributes["IconSize"])
-    						$sctrl.ImageSize = New-Object System.Drawing.Size($intSize, $intSize)
-    					}
+                        $sctrl = New-Object System.Windows.Forms.ImageList
+                        $sctrl.ImageSize = New-Object System.Drawing.Size(16,16)
+                        if($OtherAttributes["IconSize"] -ne $null)
+                        {
+                            $intSize = [system.int32]::Parse($OtherAttributes["IconSize"])
+                            $sctrl.ImageSize = New-Object System.Drawing.Size($intSize, $intSize)
+                        }
 
-    					$OtherAttributes["IconElements"] -split "," | ForEach-Object {
+                        $OtherAttributes["IconElements"] -split "," | ForEach-Object {
                             if($_.Contains("|"))
                             {
-        						$arr = $_.split("|")
+                                $arr = $_.split("|")
                                 if(!$_.Contains("."))
                                 {
                                     $arr[1] += ".png"
                                 }
-        						$item = Get-ImagefromFile $("$env:dp\Assets\{0}" -f $arr[1])
-        						$sctrl.Images.Add($arr[0],$item)
+                                $item = Get-ImagefromFile $("$env:dp\Assets\{0}" -f $arr[1])
+                                $sctrl.Images.Add($arr[0],$item)
                             }
                             else
                             {
@@ -3664,28 +3679,28 @@ Function Get-UIControl
                                     $sctrl.Images.Add($key,$item)
                                 }
                             }
-    					}
-    				    $ctrl.SmallImageList = $sctrl
+                        }
+                        $ctrl.SmallImageList = $sctrl
                     }
-				}
-
-				if($OtherAttributes["View"] -ne $null)
-				{
-					$ctrl.View = $OtherAttributes["View"]  #LargeIcon (default), SmallIcon, List, Details, Tile
-					if($OtherAttributes["View"].Contains("Large"))
-					{
-						$ctrl.LargeImageList = $sctrl
-						$ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
-					}
-					elseif($OtherAttributes["View"].Contains("Small"))
-					{
-						$ctrl.SmallImageList = $sctrl
-						$ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
-					}
                 }
 
-				if($OtherAttributes["Checkboxes"] -ne $null)
-				{
+                if($OtherAttributes["View"] -ne $null)
+                {
+                    $ctrl.View = $OtherAttributes["View"]  #LargeIcon (default), SmallIcon, List, Details, Tile
+                    if($OtherAttributes["View"].Contains("Large"))
+                    {
+                        $ctrl.LargeImageList = $sctrl
+                        $ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
+                    }
+                    elseif($OtherAttributes["View"].Contains("Small"))
+                    {
+                        $ctrl.SmallImageList = $sctrl
+                        $ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
+                    }
+                }
+
+                if($OtherAttributes["Checkboxes"] -ne $null)
+                {
                     if($OtherAttributes["Checkboxes"] -ge "1")
                     {
                         $ctrl.Checkboxes = $OtherAttributes["Checkboxes"]
@@ -3721,8 +3736,8 @@ Function Get-UIControl
                     $ctrl = $col
                 }
 
-				if($OtherAttributes["Footer"] -ne $null)
-				{
+                if($OtherAttributes["Footer"] -ne $null)
+                {
                     $col = @()
 
                     $arr = $OtherAttributes["Footer"].Split(",")
@@ -3760,46 +3775,46 @@ Function Get-UIControl
                     $NoNewLine = $OtherAttributes["NoNewLine"]
                     $global:hpos += $ctrl.Width + 5
                 }
-			}
+            }
 
             if(!$NoNewLine)
             {
-			     $global:vpos += $allHeight + 15
+                 $global:vpos += $allHeight + 15
             }
-		}
+        }
 
-		"menu" {
-			if($OtherAttributes -ne $null)
-			{
-				if($OtherAttributes["Elements"] -ne $null)
-				{
+        "menu" {
+            if($OtherAttributes -ne $null)
+            {
+                if($OtherAttributes["Elements"] -ne $null)
+                {
                     if($OtherAttributes["Elements"].StartsWith("<"))
                     {
-				        Try
-				        {
-					        $layouts = [xml]$OtherAttributes["Elements"]
+                        Try
+                        {
+                            $layouts = [xml]$OtherAttributes["Elements"]
                             $layouts = Select-Xml -Xml $layouts -Xpath "//Layout"
-				        }
-				        Catch {}
+                        }
+                        Catch {}
                     }
-					elseif($global:configXml.Root.Elements -ne $null)
+                    elseif($global:configXml.Root.Elements -ne $null)
                     {
                         if($OtherAttributes["Elements"].IndexOf(",") -ne -1)
-					    {
-						    $arr = $OtherAttributes["Elements"].Split(',')
-						    $strXpath = "Element[ID='{0}']/Layouts/Layout[@Filter='{1}']" -f $arr[0], $arr[1]
-					    }
-					    else
-					    {
-						    $strXpath = "Element[ID='{0}']/Layouts/Layout" -f $OtherAttributes["Elements"]
-					    }
-					    $layouts = select-xml -xml $($global:configXml.Root.Elements) -xpath $strXpath
+                        {
+                            $arr = $OtherAttributes["Elements"].Split(',')
+                            $strXpath = "Element[ID='{0}']/Layouts/Layout[@Filter='{1}']" -f $arr[0], $arr[1]
+                        }
+                        else
+                        {
+                            $strXpath = "Element[ID='{0}']/Layouts/Layout" -f $OtherAttributes["Elements"]
+                        }
+                        $layouts = select-xml -xml $($global:configXml.Root.Elements) -xpath $strXpath
                     }
-				}
-			}
+                }
+            }
 
-			if($layouts -ne $null)
-			{
+            if($layouts -ne $null)
+            {
                 # set value[0] to the first one if not passed
                 if($value.count -gt 0 -and [System.String]::IsNullOrEmpty($value[0]))
                 {
@@ -3813,9 +3828,9 @@ Function Get-UIControl
                     }
                 }
 
-				$ctrl = New-Object System.Windows.Forms.MenuStrip
+                $ctrl = New-Object System.Windows.Forms.MenuStrip
                 $ctrl.LayoutStyle = [System.Windows.Forms.ToolStripLayoutStyle]::Flow
-				$layouts | ForEach-Object {
+                $layouts | ForEach-Object {
                     $menu = New-Object System.Windows.Forms.ToolStripMenuItem
                     IF($_.Node.Text -ne $null)
                     {
@@ -3825,7 +3840,7 @@ Function Get-UIControl
                     {
                         $menu.Text = $_.Node.ID
                     }
-					$menu.Name= $_.Node.ID   #key
+                    $menu.Name= $_.Node.ID   #key
                     #$menu.Tag = $OtherAttributes["Elements"]   ~~Let me use tag to store enabled/visible
                     if($_.Node.GetAttribute("Help") -ne "")
                     {
@@ -3843,17 +3858,17 @@ Function Get-UIControl
                         $menu.tag = $_.Node.GetAttribute("Visible")
                     }
 
-					# Store the selected item in Tag property
-					if($value -ne $null -and $_.Node.ID -eq $value[0])
-					{
-						$menu.ForeColor = "Blue"
-						$ctrl.tag = $_.Node.ID
-					}
-					$ctrl.Items.Add($menu) | Out-Null
+                    # Store the selected item in Tag property
+                    if($value -ne $null -and $_.Node.ID -eq $value[0])
+                    {
+                        $menu.ForeColor = "Blue"
+                        $ctrl.tag = $_.Node.ID
+                    }
+                    $ctrl.Items.Add($menu) | Out-Null
                     if($_.Node.Sublayout -ne  $null)
                     {
                         $_.Node.Sublayout | ForEach-Object {
-        					$submenu = New-Object System.Windows.Forms.ToolStripMenuItem
+                            $submenu = New-Object System.Windows.Forms.ToolStripMenuItem
                             IF($_.Text -ne $null)
                             {
                                 $submenu.Text = $_.Text
@@ -3862,7 +3877,7 @@ Function Get-UIControl
                             {
                                 $submenu.Text = $_.ID
                             }
-        					$submenu.Name= $_.ID   #key
+                            $submenu.Name= $_.ID   #key
                             if($_.GetAttribute("Help") -ne "")
                             {
                                 $submenu.ToolTipText = $_.GetAttribute("Help")
@@ -3895,25 +3910,25 @@ Function Get-UIControl
 
                     $ctrl = $col
                 }
-			}
-		}
+            }
+        }
 
         "monthcalendar" {
-			$ctrl = New-Object System.Windows.Forms.MonthCalendar
-			$ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
+            $ctrl = New-Object System.Windows.Forms.MonthCalendar
+            $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
 
-			if($value -ne $null)
+            if($value -ne $null)
             {
-				$ctrl.Text = [DateTime]$value[0]
-			}
+                $ctrl.Text = [DateTime]$value[0]
+            }
 
             if($mode -eq "view")
             {
                 $ctrl.Enabled = $false
             }
 
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 foreach($key in $OtherAttributes.Keys)
                 {
                     switch($key)
@@ -3959,28 +3974,28 @@ Function Get-UIControl
 
             if(!$NoNewLine)
             {
-			     $global:vpos += 180
+                 $global:vpos += 180
             }
         }
 
         "panel" {
-		    $ctrl = New-Object System.Windows.Forms.Panel
+            $ctrl = New-Object System.Windows.Forms.Panel
             $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-			if($size -ne $null -and $size.Count -eq 2)
-			{
-			     $ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
-			}
+            if($size -ne $null -and $size.Count -eq 2)
+            {
+                 $ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
+            }
             else
             {
                 $ctrl.AutoSize = $true
                 $ctrl.AutoSizeMode = [System.Windows.Forms.AutoSizeMode]::GrowOnly
             }
-			if($value -ne $null)
+            if($value -ne $null)
             {
-				$ctrl.Text = $value[0]
-			}
-			if($OtherAttributes -ne $null)
-			{
+                $ctrl.Text = $value[0]
+            }
+            if($OtherAttributes -ne $null)
+            {
                 foreach($key in $OtherAttributes.Keys)
                 {
                     switch($key)
@@ -3998,29 +4013,29 @@ Function Get-UIControl
             }
         }
 
-		"progressbar" {
-			$ctrl= New-Object System.Windows.Forms.ProgressBar
+        "progressbar" {
+            $ctrl= New-Object System.Windows.Forms.ProgressBar
             $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-			if($size -eq $null -or $size[0] -eq 0)	   # default 300 pixel if width is not provided
-			{
-				$ctrl.Width=300
-			}
-			else
-			{
-				$ctrl.Size = New-Object System.Drawing.Size($size[0], 20)
-			}
-			$ctrl.Value = $value[0]
-            if($value.count -gt 1)
+            if($size -eq $null -or $size[0] -eq 0)	   # default 300 pixel if width is not provided
             {
-			    $ctrl.Maximum = $value[1]
+                $ctrl.Width=300
             }
             else
             {
-			    $ctrl.Maximum = 100
+                $ctrl.Size = New-Object System.Drawing.Size($size[0], 20)
+            }
+            $ctrl.Value = $value[0]
+            if($value.count -gt 1)
+            {
+                $ctrl.Maximum = $value[1]
+            }
+            else
+            {
+                $ctrl.Maximum = 100
             }
 
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 foreach($key in $OtherAttributes.Keys)
                 {
                     switch($key)
@@ -4086,17 +4101,17 @@ Function Get-UIControl
                         }
                     }
                 }
-			}
+            }
 
             if(!$NoNewLine)
             {
-			     $global:vpos += 35
+                 $global:vpos += 35
             }
-			else
-			{
-			    $global:hpos += $ctrl.PreferredSize.Width + 5
-			}
-		}
+            else
+            {
+                $global:hpos += $ctrl.PreferredSize.Width + 5
+            }
+        }
 
         "richtextbox" {
             $ctrl = New-Object System.Windows.Forms.RichTextBox
@@ -4107,26 +4122,26 @@ Function Get-UIControl
                 $ctrl.Anchor = [System.Windows.Forms.AnchorStyles]::Bottom -bor [System.Windows.Forms.AnchorStyles]::Right -bor
                                [System.Windows.Forms.AnchorStyles]::Top -bor [System.Windows.Forms.AnchorStyles]::Left
             }
-			if($size -eq $null -or $size[0] -eq 0)	   # default 100 pixel if width is not provided
-			{
-				$ctrl.Width=100
-			}
-			else
-			{
+            if($size -eq $null -or $size[0] -eq 0)	   # default 100 pixel if width is not provided
+            {
+                $ctrl.Width=100
+            }
+            else
+            {
                 if($size.Length -gt 1)
                 {
                     $ctrl.Multiline = $true
                     $ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
-					$global:vpos += $size[1]
+                    $global:vpos += $size[1]
                 }
                 else
                 {
-				    $ctrl.Size = New-Object System.Drawing.Size($size[0], 30)
+                    $ctrl.Size = New-Object System.Drawing.Size($size[0], 30)
                 }
-			}
-			if($value -ne $null)
+            }
+            if($value -ne $null)
             {
-				#$ctrl.AppendText($value[0])
+                #$ctrl.AppendText($value[0])
                 if($value[0] -is [string])
                 {
                     if ($value[0] -like "?:\*" -and $(Test-Path $value[0]))
@@ -4156,13 +4171,13 @@ Function Get-UIControl
                 {
                     $ctrl.Text = $value[0] | ConvertTo-json
                 }
-			}
+            }
             if($mode -eq "view")
             {
                 $ctrl.ReadOnly = $true
             }
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 foreach($key in $OtherAttributes.Keys)
                 {
                     switch($key)
@@ -4230,33 +4245,32 @@ Function Get-UIControl
                         }
                     }
                 }
-			}
+            }
 
-			if(!$NoNewLine)
+            if(!$NoNewLine)
             {
-				$global:vpos += 20
-			}
+                $global:vpos += 20
+            }
         }
 
-		"slider" {
-			$col = @()
-			$ctrl= New-Object System.Windows.Forms.TrackBar
+        "slider" {
+            $col = @()
+            $ctrl= New-Object System.Windows.Forms.TrackBar
             $global:hpos -= 8
             $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-			if($size -eq $null -or $size[0] -eq 0)	   # default 100 pixel if width is not provided
-			{
-				$size = 100
-			}
+            if($size -eq $null -or $size[0] -eq 0)	   # default 100 pixel if width is not provided
+            {
+                $size = 100
+            }
             $ctrl.Size = New-Object System.Drawing.Size($($size[0]-30), 20)
-			$ctrl.TickStyle = [System.Windows.Forms.TickStyle]::None
-			$ctrl.TabIndex = 1
-			$ctrl.Add_Scroll({
-				$idx = $this.Parent.Controls.IndexOf($this)+1
-	            $tmp = [System.Windows.Forms.Label]$this.Parent.Controls[$idx]
-				if($tmp -ne $null)
-				{
-					$tmp.Text = $this.Value
-				}
+            $ctrl.TickStyle = [System.Windows.Forms.TickStyle]::None
+            $ctrl.Add_Scroll({
+                $idx = $this.Parent.Controls.IndexOf($this)+1
+                $tmp = [System.Windows.Forms.Label]$this.Parent.Controls[$idx]
+                if($tmp -ne $null)
+                {
+                    $tmp.Text = $this.Value
+                }
             })
 
             if($mode -eq "view")
@@ -4264,8 +4278,8 @@ Function Get-UIControl
                 $ctrl.Enabled = $false
             }
 
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 foreach($key in $OtherAttributes.Keys)
                 {
                     switch($key)
@@ -4287,38 +4301,38 @@ Function Get-UIControl
                 }
             }
 
-			if($value -ne $null)
+            if($value -ne $null)
             {
-				$ctrl.Value = $value[0]
-			}
-			$col+= $ctrl
+                $ctrl.Value = $value[0]
+            }
+            $col+= $ctrl
 
-			#$global:hpos += $($size[0]-30)
+            #$global:hpos += $($size[0]-30)
             $global:hpos += $ctrl.PreferredSize.Width + 5
             $ctrl = New-Object System.Windows.Forms.Label
             $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-			$ctrl.TabStop = $false
+            $ctrl.TabStop = $false
             $ctrl.Text = $col[0].Maximum
             $ctrl.Width = $ctrl.PreferredSize.Width
             $ctrl.Text = $col[0].Value
-			$col+= $ctrl
+            $col+= $ctrl
 
-			if($OtherAttributes -ne $null)
-			{
-				if($OtherAttributes["Help"] -ne $null)
-				{
+            if($OtherAttributes -ne $null)
+            {
+                if($OtherAttributes["Help"] -ne $null)
+                {
                     $global:hpos += $ctrl.Width + 5
-					$ctrl = Get-UIControl "help" $OtherAttributes["Help"] 0 "" @{NoNewLine=1}
+                    $ctrl = Get-UIControl "help" $OtherAttributes["Help"] 0 "" @{NoNewLine=1}
                     $col += $ctrl
                     $global:hpos = 22
-				}
+                }
                 elseif($OtherAttributes["NoNewLine"] -ne $null)
                 {
                     $NoNewLine = $OtherAttributes["NoNewLine"]
                     $global:hpos += $ctrl.Width + 5
                 }
             }
-			$ctrl = $col
+            $ctrl = $col
 
             if(!$NoNewLine)
             {
@@ -4327,33 +4341,33 @@ Function Get-UIControl
                 {
                     $global:vpos += $tmp.Height
                 }
-			}
-		}
+            }
+        }
 
-		"tabcontrol" {
-		    $ctrl = New-Object System.Windows.Forms.TabControl
+        "tabcontrol" {
+            $ctrl = New-Object System.Windows.Forms.TabControl
             $ctrl.Multiline = $true
-			if($size[0] -eq 0)
-			{
-				if($global:vpos -eq 10 -and $global:hpos -eq 22)
-				{
-					$ctrl.Location = New-Object System.Drawing.Point(5,5)
-				}
-				$ctrl.Dock = [System.Windows.Forms.DockStyle]::Fill
-			}
-			else
-			{
-				$ctrl.Width = $size[0]
-			}
-			if($size.Length -gt 1)
-			{
-				$ctrl.Height = $size[1]
-			}
+            if($size[0] -eq 0)
+            {
+                if($global:vpos -eq 10 -and $global:hpos -eq 22)
+                {
+                    $ctrl.Location = New-Object System.Drawing.Point(5,5)
+                }
+                $ctrl.Dock = [System.Windows.Forms.DockStyle]::Fill
+            }
+            else
+            {
+                $ctrl.Width = $size[0]
+            }
+            if($size.Length -gt 1)
+            {
+                $ctrl.Height = $size[1]
+            }
 
             $arrPageColor = $null
             $arrPageBackColor = $null
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 foreach($key in $OtherAttributes.Keys)
                 {
                     switch($key)
@@ -4423,68 +4437,68 @@ Function Get-UIControl
                     }
                 }
 
-			}
+            }
 
-			$i=0
-			$value | ForEach-Object {
-				$tabPage = New-Object System.Windows.Forms.TabPage
-				if($arrPageColor -ne $null)
-				{
+            $i=0
+            $value | ForEach-Object {
+                $tabPage = New-Object System.Windows.Forms.TabPage
+                if($arrPageColor -ne $null)
+                {
                     if($arrPageColor.Count -gt $i)
                     {
-					    $tabPage.ForeColor = $arrPageColor[$i]
+                        $tabPage.ForeColor = $arrPageColor[$i]
                     }
                     else
                     {
                         $tabPage.ForeColor = $arrPageColor[0]
                     }
-				}
+                }
 
-				if($arrPageBackColor -ne $null)
-				{
+                if($arrPageBackColor -ne $null)
+                {
                     if($arrPageBackColor.Count -gt $i)
                     {
-					    $tabPage.BackColor = $arrPageBackColor[$i]
+                        $tabPage.BackColor = $arrPageBackColor[$i]
                     }
                     else
                     {
                         $tabPage.BackColor = $arrPageBackColor[0]
                     }
-				}
+                }
 
-				if($arrHelp -ne $null)
-				{
-					$ctrl.ShowToolTips = $true
+                if($arrHelp -ne $null)
+                {
+                    $ctrl.ShowToolTips = $true
                     if($arrHelp.Count -gt $i)
                     {
-					    $tabPage.TooltipText= $arrHelp[$i]
+                        $tabPage.TooltipText= $arrHelp[$i]
                     }
                     else
                     {
                         $tabPage.TooltipText = $arrHelp[0]
                     }
-				}
+                }
 
-				$tabPage.Text = $_
-				$tabPage.Name = $_
-				$tabPage.ImageIndex = $i
+                $tabPage.Text = $_
+                $tabPage.Name = $_
+                $tabPage.ImageIndex = $i
                 $tabPage.AutoScroll = $true
-				#$tabPage.Padding = new-object System.Windows.Forms.Padding(25)
-				$ctrl.Controls.Add($tabPage)
-				$i++
-			}
-		}
+                #$tabPage.Padding = new-object System.Windows.Forms.Padding(25)
+                $ctrl.Controls.Add($tabPage)
+                $i++
+            }
+        }
 
-		"textbox" {
+        "textbox" {
             $ctrl = New-Object System.Windows.Forms.TextBox
             #$ctr.ShowFocusCues = $true
             $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-			if($size -eq $null -or $size[0] -eq 0)	   # default 100 pixel if width is not provided
-			{
-				$ctrl.Width=100
-			}
-			else
-			{
+            if($size -eq $null -or $size[0] -eq 0)	   # default 100 pixel if width is not provided
+            {
+                $ctrl.Width=100
+            }
+            else
+            {
                 # Right alignment
                 if($size[0] -lt 0)
                 {
@@ -4499,13 +4513,13 @@ Function Get-UIControl
                 }
                 else
                 {
-				    $ctrl.Size = New-Object System.Drawing.Size($size[0], 30)
+                    $ctrl.Size = New-Object System.Drawing.Size($size[0], 30)
                 }
-			}
-			if($value -ne $null)
+            }
+            if($value -ne $null)
             {
-				$ctrl.Text = $value[0]
-			}
+                $ctrl.Text = $value[0]
+            }
             if($mode -eq "view")
             {
                 $ctrl.Enabled = $false
@@ -4517,8 +4531,8 @@ Function Get-UIControl
                 })
             }
 
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 $col = @()
                 $col += $ctrl
 
@@ -4715,7 +4729,7 @@ Function Get-UIControl
 
                 if($OtherAttributes["Required"] -ne $null -or $OtherAttributes["ValidateString"] -ne $null -or `
                   ($OtherAttributes["Number"] -ne $null -and ($OtherAttributes["Max"] -ne $null -or $OtherAttributes["Min"] -ne $null)))
-				{
+                {
                     if($OtherAttributes["Number"] -ne $null)
                     {
                         if($OtherAttributes["Max"] -ne $null)
@@ -4738,19 +4752,19 @@ Function Get-UIControl
                         $ctrl.tag += "ValidateString={0};" -f $OtherAttributes["ValidateString"]
                     }
 
-					$ctrl.Add_Validating({
+                    $ctrl.Add_Validating({
                         $strReq = Get-Instr $this.tag "Required=" ";"
                         if(![System.String]::IsNullOrEmpty($strReq) -and [System.String]::IsNullOrEmpty($this.Text))
-						{
-							$this.FindForm().Tag.SetError($this, "Required field");
-							$_.Cancel = $true
-						}
+                        {
+                            $this.FindForm().Tag.SetError($this, "Required field");
+                            $_.Cancel = $true
+                        }
                         else
                         {
                             $strValid = Get-Instr $this.tag "ValidateString=" ";"
                             if(![System.String]::IsNullOrEmpty($strValid) -and $this.Text -ne $strValid)
                             {
-                            	$this.FindForm().Tag.SetError($this, "Type exact string '$strValid' in order to continue")
+                                $this.FindForm().Tag.SetError($this, "Type exact string '$strValid' in order to continue")
                                 $_.Cancel = $true
                             }
                             else
@@ -4761,7 +4775,7 @@ Function Get-UIControl
                                     $intMax = [decimal]$tmp
                                     if([decimal]$this.Text -gt $intMax)
                                     {
-                            	        $this.FindForm().Tag.SetError($this, "It can't be greater than $intMax")
+                                        $this.FindForm().Tag.SetError($this, "It can't be greater than $intMax")
                                         $_.Cancel = $true
                                     }
                                 }
@@ -4772,18 +4786,18 @@ Function Get-UIControl
                                     $intMin = [decimal]$tmp
                                     if([decimal]$this.Text -lt $intMin)
                                     {
-                            	        $this.FindForm().Tag.SetError($this, "It can't be less than $intMin")
+                                        $this.FindForm().Tag.SetError($this, "It can't be less than $intMin")
                                         $_.Cancel = $true
                                     }
                                 }
                             }
-						}
+                        }
                         if(!$_.Cancel)
                         {
                             $this.FindForm().Tag.SetError($this, "")
                         }
-					})
-				}
+                    })
+                }
 
                 $ctrl = $col
             }
@@ -4798,16 +4812,16 @@ Function Get-UIControl
             }
         }
 
-		"treeview" {
-			$ctrl = New-Object System.Windows.Forms.TreeView
-			$ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
+        "treeview" {
+            $ctrl = New-Object System.Windows.Forms.TreeView
+            $ctrl.Size = New-Object System.Drawing.Size($size[0], $size[1])
             if($mode -eq "view")
             {
                 $ctrl.Enabled = $false
             }
 
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 foreach($key in $OtherAttributes.Keys)
                 {
                     switch($key)
@@ -4825,42 +4839,42 @@ Function Get-UIControl
             }
 
             if($value -ne $null)
-			{
-				if($value[0].GetType().Name -eq "hashtable")
-				{
-					$tmp = ""
-					$value[0].Keys | ForEach-Object {
-						if($_ -ne $tmp)
-						{
-							$saNode = Add-Node $ctrl $_ "" "0"
-							$tmp = $_
-						}
+            {
+                if($value[0].GetType().Name -eq "hashtable")
+                {
+                    $tmp = ""
+                    $value[0].Keys | ForEach-Object {
+                        if($_ -ne $tmp)
+                        {
+                            $saNode = Add-Node $ctrl $_ "" "0"
+                            $tmp = $_
+                        }
 
-						if($value[0][$_] -ne $null)
-						{
-							Add-Node $saNode $value[0][$_] "" "1" | Out-Null
-						}
-					}
-				}
-				else
-				{
-				    $value | ForEach-Object {
-					    Add-Node $ctrl $_ "" "0" | Out-Null
-				    }
-				}
-			}
-			$global:vpos += $size[1]
-		}
+                        if($value[0][$_] -ne $null)
+                        {
+                            Add-Node $saNode $value[0][$_] "" "1" | Out-Null
+                        }
+                    }
+                }
+                else
+                {
+                    $value | ForEach-Object {
+                        Add-Node $ctrl $_ "" "0" | Out-Null
+                    }
+                }
+            }
+            $global:vpos += $size[1]
+        }
 
         "updown" {
-			$ctrl = New-Object System.Windows.Forms.DomainUpDown
-			$ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-			if($size -eq $null -or $size[0] -eq 0)	   # default 100 pixel if width is not provided
-			{
-				$ctrl.Width=100
-			}
-			else
-			{
+            $ctrl = New-Object System.Windows.Forms.DomainUpDown
+            $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
+            if($size -eq $null -or $size[0] -eq 0)	   # default 100 pixel if width is not provided
+            {
+                $ctrl.Width=100
+            }
+            else
+            {
                 if($size.Length -gt 1)
                 {
                     $ctrl.Multiline = $true
@@ -4868,9 +4882,9 @@ Function Get-UIControl
                 }
                 else
                 {
-				    $ctrl.Size = New-Object System.Drawing.Size($size[0], 30)
+                    $ctrl.Size = New-Object System.Drawing.Size($size[0], 30)
                 }
-			}
+            }
             $ctrl.ReadOnly = $true
 
             if($mode -eq "view")
@@ -4878,8 +4892,8 @@ Function Get-UIControl
                 $ctrl.Enabled = $false
             }
 
-			if($OtherAttributes -ne $null)
-			{
+            if($OtherAttributes -ne $null)
+            {
                 $col = @()
                 $col += $ctrl
 
@@ -4940,147 +4954,145 @@ Function Get-UIControl
                 $ctrl = $col
             }
 
-			if($value.count -gt 0)
+            if($value.count -gt 0)
             {
-				if(-not [string]::IsNullOrEmpty($value[0]))
+                if(-not [string]::IsNullOrEmpty($value[0]))
                 {
                     $tmp = $ctrl | Select-Object -First 1
                     $tmp.SelectedIndex = $ctrl.Items.IndexOf("$($value[0])")
                 }
-			}
+            }
 
             if(!$NoNewLine)
             {
                 $tmp = $ctrl | Select-Object -First 1
                 if($tmp.Visible)
                 {
-			        $global:vpos += $allHeight + 35
+                    $global:vpos += $allHeight + 35
                 }
             }
         }
 
         "radiobutton" {
-			if($OtherAttributes["Text"] -ne $null)
-			{
-				$col = @()
+            if($OtherAttributes["Text"] -ne $null)
+            {
+                $col = @()
 
-				$ctrl = New-Object System.Windows.Forms.Panel
-				$ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-				$ctrl.AutoSizeMode = [System.Windows.Forms.AutoSizeMode]::GrowAndShrink
-				$ctrl.AutoSize = $true
-				$ctrl.TabIndex = 1
+                $ctrl = New-Object System.Windows.Forms.Panel
+                $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
+                $ctrl.AutoSizeMode = [System.Windows.Forms.AutoSizeMode]::GrowAndShrink
+                $ctrl.AutoSize = $true
 
-			    if($OtherAttributes["Tooltip"] -ne $null)
-			    {
+                if($OtherAttributes["Tooltip"] -ne $null)
+                {
                     $arrRBTooltips = $OtherAttributes["Tooltip"] -split ","
                 }
 
-				$colText = $OtherAttributes["Text"] -split ","
-				$delta = 0
-				$i = 1
-				$hpos = 0
+                $colText = $OtherAttributes["Text"] -split ","
+                $i = 1
+                $hpos = 0
                 $vpos = 0
-				ForEach($tmp in $colText)
-				{
-					if($tmp -eq "")
-					{
-						$hpos += 20
-					}
-					else
-					{
-						$blnEventAdded = $false
-						if($tmp.indexOf("|") -ne -1)
-						{
-							$arr = $tmp.Split("|")
-							$itemval = $arr[0]
-							$itemtxt = $arr[1]
-						}
-						else
-						{
-							$itemval = $tmp
-							$itemtxt = $tmp
-						}
+                ForEach($tmp in $colText)
+                {
+                    if($tmp -eq "")
+                    {
+                        $hpos += 20
+                    }
+                    else
+                    {
+                        $blnEventAdded = $false
+                        if($tmp.indexOf("|") -ne -1)
+                        {
+                            $arr = $tmp.Split("|")
+                            $itemval = $arr[0]
+                            $itemtxt = $arr[1]
+                        }
+                        else
+                        {
+                            $itemval = $tmp
+                            $itemtxt = $tmp
+                        }
 
-						$sctrl = New-Object System.Windows.Forms.RadioButton
-						$sctrl.Location = New-Object System.Drawing.Point($hpos, $vpos)
-						$sctrl.AutoSize = $true
-						if($OtherAttributes["NormalAppearance"] -eq $null)
-						{
-							$sctrl.Appearance = [System.Windows.Forms.Appearance]::Button
-							$sctrl.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-						}
-						$sctrl.Text = $itemtxt
-						$sctrl.Name = $itemval	# tag is used for child toggling
+                        $sctrl = New-Object System.Windows.Forms.RadioButton
+                        $sctrl.Location = New-Object System.Drawing.Point($hpos, $vpos)
+                        $sctrl.AutoSize = $true
+                        if($OtherAttributes["NormalAppearance"] -eq $null)
+                        {
+                            $sctrl.Appearance = [System.Windows.Forms.Appearance]::Button
+                            $sctrl.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+                        }
+                        $sctrl.Text = $itemtxt
+                        $sctrl.Name = $itemval	# tag is used for child toggling
 
                         if($value.Count -gt 0)
                         {
-						    if($value[0].GetType().Name -eq "Boolean")
-						    {
+                            if($value[0].GetType().Name -eq "Boolean")
+                            {
                                 if($OtherAttributes["NormalAppearance"] -eq $null)
                                 {
-    							    if(($itemval -eq "On" -or $itemval -eq "Yes" -or $itemval -eq "true" -or $itemval -eq 1) -and $value[0])
-    							    {
-    								    $sctrl.checked = $true
-    									$ctrl.Tag= $itemval
-    							    }
-    							    elseif(($itemval -eq "Off" -or $itemval -eq "No" -or $itemval -eq "false" -or $itemval -eq 0) -and -not $value[0])
-    							    {
-    								    $sctrl.checked = $true
-    									$ctrl.Tag = $itemval
-    							    }
+                                    if(($itemval -eq "On" -or $itemval -eq "Yes" -or $itemval -eq "true" -or $itemval -eq 1) -and $value[0])
+                                    {
+                                        $sctrl.checked = $true
+                                        $ctrl.Tag= $itemval
+                                    }
+                                    elseif(($itemval -eq "Off" -or $itemval -eq "No" -or $itemval -eq "false" -or $itemval -eq 0) -and -not $value[0])
+                                    {
+                                        $sctrl.checked = $true
+                                        $ctrl.Tag = $itemval
+                                    }
                                 }
-                				if($OtherAttributes["Opposite"] -ne $null)
-                				{
-                					$sctrl.Checked = !$sctrl.Checked
-                				}
-						    }
-						    elseif($itemval -eq $value[0])
-						    {
-							    $sctrl.checked = $true
-							    $ctrl.Tag= $itemval
-						    }
+                                if($OtherAttributes["Opposite"] -ne $null)
+                                {
+                                    $sctrl.Checked = !$sctrl.Checked
+                                }
+                            }
+                            elseif($itemval -eq $value[0])
+                            {
+                                $sctrl.checked = $true
+                                $ctrl.Tag= $itemval
+                            }
                         }
-						elseif($_ -eq $colText[0])
-						{
-							#Preset the first selection to parent's tag if no value is provided
-							$ctrl.Tag = $colText[0]
-						}
+                        elseif($_ -eq $colText[0])
+                        {
+                            #Preset the first selection to parent's tag if no value is provided
+                            $ctrl.Tag = $colText[0]
+                        }
 
-						if($mode -eq "view")
-						{
-							$sctrl.Enabled = $false
-						}
+                        if($mode -eq "view")
+                        {
+                            $sctrl.Enabled = $false
+                        }
 
                         $vert = $false
-						if($OtherAttributes -ne $null)
-						{
-							if($OtherAttributes["Name"] -ne $null)
-							{
-								$ctrl.Name = $OtherAttributes["Name"]
-							}
+                        if($OtherAttributes -ne $null)
+                        {
+                            if($OtherAttributes["Name"] -ne $null)
+                            {
+                                $ctrl.Name = $OtherAttributes["Name"]
+                            }
                             if($OtherAttributes["Vertical"] -ne $null)
                             {
                                 $vert = $true
                             }
-						}
+                        }
 
-						if(-not $blnEventAdded)
-						{
-							$sctrl.Add_CheckedChanged({
-								if($this.checked)
-								{
-									$this.parent.tag = $this.Name
-								}
-							})
-						}
+                        if(-not $blnEventAdded)
+                        {
+                            $sctrl.Add_CheckedChanged({
+                                if($this.checked)
+                                {
+                                    $this.parent.tag = $this.Name
+                                }
+                            })
+                        }
 
                         if($arrRBTooltips -ne $null -and $arrRBTooltips[$i-1] -ne "")
                         {
                             Set-UIToolTip $sctrl $arrRBTooltips[$i-1]
                         }
 
-						$ctrl.Controls.Add($sctrl)
-						#$col+= $sctrl
+                        $ctrl.Controls.Add($sctrl)
+                        #$col+= $sctrl
                         if($vert)
                         {
                             $vpos += 20
@@ -5089,44 +5101,44 @@ Function Get-UIControl
                         {
                             $hpos += $sctrl.PreferredSize.Width
                         }
-						$i++
-					}
-				}
+                        $i++
+                    }
+                }
                 if($vpos -gt 0)
                 {
                     $global:vpos += $vpos - 35
                 }
-				#$ctrl = $col
-			}
-			else	# single selection?  usually the Text is specified
-			{
-				$ctrl = New-Object System.Windows.Forms.RadioButton
-				$ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
-				$ctrl.AutoSize = $true
-				$ctrl.Appearance = [System.Windows.Forms.Appearance]::Button
-				$ctrl.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+                #$ctrl = $col
+            }
+            else	# single selection?  usually the Text is specified
+            {
+                $ctrl = New-Object System.Windows.Forms.RadioButton
+                $ctrl.Location = New-Object System.Drawing.Point($global:hpos, $global:vpos)
+                $ctrl.AutoSize = $true
+                $ctrl.Appearance = [System.Windows.Forms.Appearance]::Button
+                $ctrl.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
                 if($value -ne $null)
                 {
-				    $ctrl.Text = $value[0]
+                    $ctrl.Text = $value[0]
                 }
-				if($mode -eq "view")
-				{
-					$ctrl.Enabled = $false
-				}
-			}
+                if($mode -eq "view")
+                {
+                    $ctrl.Enabled = $false
+                }
+            }
 
-			if($OtherAttributes["Help"] -ne $null)
-			{
-			    $col = @()
+            if($OtherAttributes["Help"] -ne $null)
+            {
+                $col = @()
                 $col += $ctrl
                 $lastCtrl = $ctrl | Select-Object -Last 1
                 $global:hpos = $lastCtrl.Left + $lastctrl.PreferredSize.Width + 5
-					$ctrl = Get-UIControl "help" $OtherAttributes["Help"] 0 "" @{NoNewLine=1}
+                    $ctrl = Get-UIControl "help" $OtherAttributes["Help"] 0 "" @{NoNewLine=1}
                 $col += $ctrl
                 $ctrl = $col
                 $global:hpos = 22
-			}
-			elseif($OtherAttributes["NoNewLine"] -ne $null)
+            }
+            elseif($OtherAttributes["NoNewLine"] -ne $null)
             {
                 $NoNewLine = $OtherAttributes["NoNewLine"]
                 $global:hpos += $ctrl.PreferredSize.Width + 5
@@ -5134,7 +5146,7 @@ Function Get-UIControl
 
             if(!$NoNewLine)
             {
-			     $global:vpos += 40
+                 $global:vpos += 40
             }
 
             If($OtherAttributes -ne $null -and $OtherAttributes["ToggleChildDisplay"] -ne $null)
@@ -5154,12 +5166,12 @@ Function Get-UIControl
                 }
                 [array]$arrSize = foreach($tmp in $arrTmp) {([int]::parse($tmp))}
 
-        		$col = @()
+                $col = @()
                 $col += $ctrl
                 $tmp = $ctrl | Select-Object -first 1
                 $tmp.Controls | ForEach-Object {
                     $_.Add_CheckedChanged({
-						if($this.checked) {$this.parent.tag = $this.Name}
+                        if($this.checked) {$this.parent.tag = $this.Name}
 
                         $iSelected = $this.Parent.Controls.IndexOf($this)
                         $idx = $this.Parent.Parent.Controls.IndexOf($this.Parent)
@@ -5193,14 +5205,14 @@ Function Get-UIControl
         }
     }
 
-	# reset hpos
-	if($ControlType -ne "caption")
-	{
+    # reset hpos
+    if($ControlType -ne "caption")
+    {
         if(!$NoNewLine)
         {
-		      $global:hpos = 22
+              $global:hpos = 22
         }
-	}
+    }
 
     return $ctrl
 }
@@ -5220,21 +5232,21 @@ Function Get-UIControl
 #>
 Function Set-UITooltip
 {
-	param(
-		$Control,
-		[string]$StrTooltip,
-		[switch]$Show
-	)
+    param(
+        $Control,
+        [string]$StrTooltip,
+        [switch]$Show
+    )
 
-	$ToolTip = New-Object System.Windows.Forms.ToolTip
-	$ToolTip.BackColor = [System.Drawing.Color]::LightGoldenrodYellow
-	$ToolTip.IsBalloon = $true
-	$ToolTip.InitialDelay = 500
-	$ToolTip.ReshowDelay = 500
-	$ToolTip.SetToolTip($Control, $StrTooltip)
+    $ToolTip = New-Object System.Windows.Forms.ToolTip
+    $ToolTip.BackColor = [System.Drawing.Color]::LightGoldenrodYellow
+    $ToolTip.IsBalloon = $true
+    $ToolTip.InitialDelay = 500
+    $ToolTip.ReshowDelay = 500
+    $ToolTip.SetToolTip($Control, $StrTooltip)
 
     if($Show)
-	{
-		$ToolTip.Show($StrTooltip, $Control, 1500)
-	}
+    {
+        $ToolTip.Show($StrTooltip, $Control, 1500)
+    }
 }
