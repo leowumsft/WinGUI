@@ -201,7 +201,7 @@ function Get-UIWinForm
         $i = 500
         $buttonText | ForEach-Object {
             $button1 = New-Object System.Windows.Forms.Button
-            $button.TabStop = $false
+            $button1.TabStop = $false
             if($_.StartsWith("<"))
             {
                 $tmp2 = $_.Substring(1)
